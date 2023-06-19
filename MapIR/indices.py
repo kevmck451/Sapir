@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def NDVI(mapir_object):
+def NDVI(mapir_object, display=True, save=False):
     NIR = mapir_object.data[:, :, mapir_object.NIR_index]
     RED = mapir_object.data[:, :, mapir_object.R_index]
 
@@ -21,7 +21,13 @@ def NDVI(mapir_object):
     # plt.colorbar()
     plt.axis('off')
     plt.tight_layout(pad=1)
-    plt.show()
+
+    if save:
+        saveas = (f'{mapir_object.path.parent}/{mapir_object.file_name} NDVI.pdf')
+        plt.savefig(saveas)
+        plt.close()
+    if display:
+        plt.show()
 
 
 def GNDVI(mapir_object):

@@ -12,9 +12,9 @@ class MapIR:
     def __init__(self, raw_file_path):
 
         self.file_path = raw_file_path
-        path = Path(raw_file_path)
-        self.file_name = path.stem
-        self.file_type = path.suffix
+        self.path = Path(raw_file_path)
+        self.file_name = self.path.stem
+        self.file_type = self.path.suffix
 
         self.data = iio.imread(self.file_path)
         self.data = self.data[:, :, 0:3]
