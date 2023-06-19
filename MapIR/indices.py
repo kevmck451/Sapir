@@ -16,6 +16,7 @@ def NDVI(mapir_object, display=True, save=False):
     ndvi_array[ndvi_array < 0] = 0
     ndvi_array[ndvi_array > 1] = 1
 
+    plt.figure(figsize=(12,12))
     plt.imshow(ndvi_array, cmap=plt.get_cmap("RdYlGn"))
     plt.title(f'NDVI: {mapir_object.file_name}')
     # plt.colorbar()
