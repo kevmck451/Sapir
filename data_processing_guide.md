@@ -33,11 +33,11 @@ Follow these steps to process your data:
 
 2. **Post Processing Steps**: Once the process script runs, it will perform the following operations:
 
-    - Renaming files in the raw folder for easier processing
-    - Debayering and correcting RAW files
-    - Applying radiance and reflectance calibration
-    - Saving processed files in a '_processed' folder in the directory as TIFF files
-    - Generating a 'geo.txt' file for each processed file, used for georectification with WebODM
+    - Rename files in the raw folder for easier processing
+    - Debayer and correct RAW files
+    - Apply radiance and reflectance calibration
+    - Save processed files in a '_processed' folder in the directory as TIFF files
+    - Generate a 'geo.txt' file for each processed file, used for georectification with WebODM
 
 3. **Georectification**: Upload the contents of the "_processed" folder to WebODM for georectification.
 
