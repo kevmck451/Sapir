@@ -43,6 +43,8 @@ Follow these steps to process your data:
 
 4. **Download Final Image**: After georectification, download the orthomosaic photo as a PNG.
 
+> **Troubleshoot:** *If there is a "File Corrupt" message printed, deleted the "_processed" folder and run the script again.*
+
 ## Data Analysis
 
 Refer to the 'analysis.py' script provided in the MapIR package. This script includes examples of analysis options for the data and serves as a starting point for further analysis. You can modify and extend this script based on your specific requirements.

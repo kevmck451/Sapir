@@ -228,9 +228,8 @@ class MapIR_RAW:
                             lon_seconds / 3600)  # updated with lon minutes and seconds
                 geolocation_array[2] = altitude_val  # assign altitude to array
 
-
             # Append the image geolocation to the geo.txt file
-            file_path = os.path.join(path.parent, '_processed', 'geo.txt')
+            file_path = os.path.join(path.parent.parent, '_processed', 'geo.txt')
 
             # Check if the file exists
             if not os.path.exists(file_path):
@@ -246,19 +245,19 @@ class MapIR_RAW:
     # Function to export image as 16-bit tiff
     def export_tiff(self):
         path = Path(self.file_path)
-        save_as = f'{path.parent}/_processed/{path.stem}.tiff'
+        save_as = f'{path.parent.parent}/_processed/{path.stem}.tiff'
         imageio.imsave(save_as, self.data, format='tiff')
 
     # Function to export image as 16-bit png
     def export_png(self):
         path = Path(self.file_path)
-        save_as = path.parent/'_processed'/(path.stem+'.png')
+        save_as = path.parent.parent/'_processed'/(path.stem+'.png')
         imageio.imwrite(save_as, self.data, 'PNG-FI')
 
     # Function to export image as 8 bit jpg
     def export_jpg(self):
         path = Path(self.file_path)
-        save_as = path.parent / '_processed' / (path.stem + '.jpg')
+        save_as = path.parent.parent / '_processed' / (path.stem + '.jpg')
         # change data to 8bit
         data = self.data
         data_norm = (data - np.min(data)) / (np.max(data) - np.min(data))
