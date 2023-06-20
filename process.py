@@ -19,7 +19,7 @@ To Process a Directory it must contain:
 '''
 
 
-from MapIR_RAW import MapIR_RAW
+from raw import MapIR_RAW
 from pathlib import Path
 import os
 
