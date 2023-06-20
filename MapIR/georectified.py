@@ -7,7 +7,7 @@ import imageio.v2 as iio
 import numpy as np
 import cv2
 
-# MapIR class to process RAW images
+# MapIR class to analyze georectified images
 class MapIR:
     def __init__(self, raw_file_path):
 
@@ -53,9 +53,29 @@ class MapIR:
             plt.show()
 
     # Function to calculate and display the Green Normalized Difference Vegetation Index
-    def GNDVI(self):
-        pass
+    def GNDVI(self, display=True, save=False):
+        NIR = self.data[:, :, self.NIR_index]
+        GREEN = self.data[:, :, self.G_index]
 
-    # Function to calculate and display the Red Edge Normalized Difference Vegetation Index
-    def NDRE(self):
-        pass
+        GREEN, NIR = GREEN.astype('float'), NIR.astype('float')
+
+        top, bottom = NIR - GREEN, NIR + GREEN
+        top[top == 0], bottom[bottom == 0] = 0, np.nan
+
+        gndvi_array = np.divide(top, bottom)
+        gndvi_array[gndvi_array < 0] = 0
+        gndvi_array[gndvi_array > 1] = 1
+
+        plt.figure(figsize=(12, 12))
+        plt.imshow(gndvi_array, cmap=plt.get_cmap("RdYlGn"))
+        plt.title(f'GNDVI: {self.file_name}')
+        plt.axis('off')
+        plt.tight_layout(pad=1)
+
+        if save:
+            saveas = (f'{self.path.parent}/{self.file_name} GNDVI.pdf')
+            plt.savefig(saveas)
+            plt.close()
+        if display:
+            plt.show()
+
