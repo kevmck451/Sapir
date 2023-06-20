@@ -24,7 +24,7 @@ from pathlib import Path
 import os
 
 
-def main(base_directory):
+def process(base_directory):
     bd = Path(base_directory)
 
     # Create a new directory to contain processed files if doesnt exist
@@ -67,4 +67,4 @@ def main(base_directory):
 
 if __name__ == '__main__':
     base_directory = '../Data/MapIR/AC Summer 23/Wheat Field/6-8'
-    main(base_directory)
+    process(base_directory)
