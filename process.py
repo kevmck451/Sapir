@@ -13,8 +13,10 @@ def process(base_directory):
     # Rename all files in base directory for easier processing
     for raw_file in raw_directory.iterdir():
         if raw_file.suffix in ['.JPG', '.RAW']:
-            # Get the last 3 characters of the filename, excluding the suffix
-            new_name = raw_file.stem[-3:] + raw_file.suffix
+            # Split the filename by underscores
+            split_stem = raw_file.stem.split('_')
+            # Get the last segment after the last underscore
+            new_name = split_stem[-1] + raw_file.suffix
             # Create the full new file path
             new_file_path = raw_directory / new_name
             # Rename the file
@@ -33,5 +35,6 @@ def process(base_directory):
 
 
 if __name__ == '__main__':
-    base_directory = '../Data/MapIR/AZ 22'
+    # base_directory = '../Data/MapIR/AC Summer 23/Wheat Field/6-20'
+    base_directory = '../Data/MapIR/AC Summer 23/Main Sub Field/6-20'
     process(base_directory)
