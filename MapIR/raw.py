@@ -11,14 +11,11 @@ import cv2
 import os
 
 
+
 # MapIR class to process RAW images
 class MapIR_RAW:
     def __init__(self, raw_file_path):
-        self.debay = False
-        self.unp = False
         self.file_path = raw_file_path
-        self.corrected = False
-
         path = Path(raw_file_path)
         self.file_name = path.stem
         self.file_type = path.suffix
@@ -30,7 +27,6 @@ class MapIR_RAW:
         # ----------------- UNPACK RAW DATA --------------------
         # Function to unpack MapIR raw image file per-pixel 12 bit values
         try:
-            self.unp = True
             # unpack a mapir raw image file into per-pixel 12 bit values
             # print(len(self.data))
             assert len(self.data) == 1.5 * 4000 * 3000
@@ -50,7 +46,6 @@ class MapIR_RAW:
             middle_even = self.data[1::3].copy()
             middle_even &= 0xF
             middle_even <<= 8
-
             middle_odd = self.data[1::3].copy()
             middle_odd &= 0xF0
             middle_odd >>= 4
@@ -71,23 +66,22 @@ class MapIR_RAW:
             self.R_index, self.G_index, self.NIR_index = 0, 1, 2
 
             self._debayer()
-            self._correct()
             self._radiometic_calibration()
-            self._reflectance_calibration()
-            self._render_RGB()
 
-            # Convert to 16 bit
-            data = self.data
-            data_norm = (data - np.min(data)) / (np.max(data) - np.min(data))
-            data_scaled = data_norm * 65535
-            self.data = data_scaled.astype(np.uint16)
+            # self._correct()
+            # self._render_RGB()
+
+            # Normalize to 16 bit
+            # data = self.data
+            # data_norm = (data - np.min(data)) / (np.max(data) - np.min(data))
+            # data_scaled = data_norm * 65535
+            # self.data = data_scaled.astype(np.uint16)
 
         except:
             print(f'File Corrupt: {self.file_name}')
 
     # Function to debayer image matrix
     def _debayer(self):
-
         # the bayer pattern is
         # R G
         # G B
@@ -97,16 +91,60 @@ class MapIR_RAW:
         # COLOR_BAYER_BG2RGB # Thomas
         debayered_data = cv2.cvtColor(self.data, cv2.COLOR_BAYER_BG2RGB)
         # print(self.data[1330:1332, 1836:1838])
-
-        output_data = (debayered_data >> 4).astype(np.uint8)
-
         # print(output_data.mean(axis=(0, 1)))
 
-        self.data = output_data
+        self.data = debayered_data
+
+    # Function to apply radiometric calibration to images
+    def _radiometic_calibration(self):
+        # Dark Current Subtraction: 7 for each band
+
+        mean_r = int(np.mean(self.data[:, :, 0]))
+        mean_g = int(np.mean(self.data[:, :, 1]))
+        mean_n = int(np.mean(self.data[:, :, 2]))
+
+        print(mean_r, mean_g, mean_n)
+
+        # Calculate the maximum and minimum values for each channel
+        max_r, min_r = np.max(self.data[:, :, 0]), np.min(self.data[:, :, 0])
+        max_g, min_g = np.max(self.data[:, :, 1]), np.min(self.data[:, :, 1])
+        max_n, min_n = np.max(self.data[:, :, 2]), np.min(self.data[:, :, 2])
+
+        # Use the variables as needed
+        print(f'Max R: {max_r}')
+        print(f'Min R: {min_r}')
+        print(f'Max G: {max_g}')
+        print(f'Min G: {min_g}')
+        print(f'Max B: {max_n}')
+        print(f'Min B: {min_n}')
+
+        # Find the indices where the value equals the maximum value
+        max_indices_R = np.where(self.data[:,:,0] == np.max(self.data[:,:,0]))
+        max_indices_G = np.where(self.data[:,:,1] == np.max(self.data[:,:,1]))
+        max_indices_N = np.where(self.data[:,:,2] == np.max(self.data[:,:,2]))
+        # print(max_indices_R)
+
+
+        mean_indices_R = np.where(self.data[:, :, 0] <= mean_r)
+        mean_indices_G = np.where(self.data[:, :, 1] <= mean_g)
+        mean_indices_N = np.where(self.data[:, :, 2] <= mean_n)
+
+        # Create a grayscale image of the matrix
+        plt.imshow(self.data, cmap='gray')
+
+        # Add red spots at the maximum value locations
+        plt.scatter(max_indices_R[1], max_indices_R[0], color='red', label=max_r, s=1)
+        plt.scatter(max_indices_G[1], max_indices_G[0], color='green', label=max_g, s=1)
+        plt.scatter(max_indices_N[1], max_indices_N[0], color='blue', label=max_n, s=1)
+        # plt.scatter(mean_indices_R[1], mean_indices_R[0], color='#FFC0CB', label=mean_r, s=1)
+        # plt.scatter(mean_indices_G[1], mean_indices_G[0], color='#AEC6CF', label=mean_g, s=1)
+        # plt.scatter(mean_indices_N[1], mean_indices_N[0], color='#32CD32', label=mean_n, s=1)
+        plt.title(f'{self.file_name}')
+        plt.legend()
+        plt.show()
 
     # Function to correct leakage in sensor
     def _correct(self):
-        self.corrected = True
         # image_matrix = [[336.68, 74.61, 37.63], [33.52, 347.5, 41.77], [275.41, 261.99, 286.5]]
         # image_matrix = [[7.18, 2.12, 1.02], [0.72, 9.86, 1.12], [5.88, 7.43, 7.74]]
         image_matrix = [[336, 33, 275], [74, 347, 261], [37, 41, 286]]
@@ -121,14 +159,6 @@ class MapIR_RAW:
             corrected_data[i] = (inverse_matrix @ self.data[i].T).T
 
         self.data = corrected_data
-
-    # Function to apply radiometric calibration to images
-    def _radiometic_calibration(self):
-        pass
-
-    # Function to apply reflectance calibration from ref_tar.RAW
-    def _reflectance_calibration(self):
-        pass
 
     # Function to display the data
     def _render_RGB(self, hist=False):

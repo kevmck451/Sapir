@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import imageio.v2 as iio
 import numpy as np
-import cv2
 
 # MapIR class to analyze georectified images
 class MapIR:
