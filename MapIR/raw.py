@@ -11,7 +11,6 @@ import cv2
 import os
 
 
-
 # MapIR class to process RAW images
 class MapIR_RAW:
     def __init__(self, raw_file_path):
@@ -97,51 +96,12 @@ class MapIR_RAW:
 
     # Function to apply radiometric calibration to images
     def _radiometic_calibration(self):
+
         # Dark Current Subtraction: 7 for each band
-
-        mean_r = int(np.mean(self.data[:, :, 0]))
-        mean_g = int(np.mean(self.data[:, :, 1]))
-        mean_n = int(np.mean(self.data[:, :, 2]))
-
-        print(mean_r, mean_g, mean_n)
-
-        # Calculate the maximum and minimum values for each channel
-        max_r, min_r = np.max(self.data[:, :, 0]), np.min(self.data[:, :, 0])
-        max_g, min_g = np.max(self.data[:, :, 1]), np.min(self.data[:, :, 1])
-        max_n, min_n = np.max(self.data[:, :, 2]), np.min(self.data[:, :, 2])
-
-        # Use the variables as needed
-        print(f'Max R: {max_r}')
-        print(f'Min R: {min_r}')
-        print(f'Max G: {max_g}')
-        print(f'Min G: {min_g}')
-        print(f'Max B: {max_n}')
-        print(f'Min B: {min_n}')
-
-        # Find the indices where the value equals the maximum value
-        max_indices_R = np.where(self.data[:,:,0] == np.max(self.data[:,:,0]))
-        max_indices_G = np.where(self.data[:,:,1] == np.max(self.data[:,:,1]))
-        max_indices_N = np.where(self.data[:,:,2] == np.max(self.data[:,:,2]))
-        # print(max_indices_R)
-
-
-        mean_indices_R = np.where(self.data[:, :, 0] <= mean_r)
-        mean_indices_G = np.where(self.data[:, :, 1] <= mean_g)
-        mean_indices_N = np.where(self.data[:, :, 2] <= mean_n)
-
-        # Create a grayscale image of the matrix
-        plt.imshow(self.data, cmap='gray')
-
-        # Add red spots at the maximum value locations
-        plt.scatter(max_indices_R[1], max_indices_R[0], color='red', label=max_r, s=1)
-        plt.scatter(max_indices_G[1], max_indices_G[0], color='green', label=max_g, s=1)
-        plt.scatter(max_indices_N[1], max_indices_N[0], color='blue', label=max_n, s=1)
-        # plt.scatter(mean_indices_R[1], mean_indices_R[0], color='#FFC0CB', label=mean_r, s=1)
-        # plt.scatter(mean_indices_G[1], mean_indices_G[0], color='#AEC6CF', label=mean_g, s=1)
-        # plt.scatter(mean_indices_N[1], mean_indices_N[0], color='#32CD32', label=mean_n, s=1)
-        plt.title(f'{self.file_name}')
-        plt.legend()
-        plt.show()
+        data = self.data.astype(np.float32)
+        data -= 8
+        data[data < 0] = 0
+        self.data = data.astype(np.uint16)
 
     # Function to correct leakage in sensor
     def _correct(self):
