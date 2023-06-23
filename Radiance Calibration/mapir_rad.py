@@ -31,7 +31,48 @@ class MapIR_Radiance(MapIR):
         # Radiometric Calibration
 
 
+    def dial_in(self):
+        # Calculate the maximum and minimum values for each channel
+        max_r, min_r = np.max(self.data[:, :, 0]), np.min(self.data[:, :, 0])
+        max_g, min_g = np.max(self.data[:, :, 1]), np.min(self.data[:, :, 1])
+        max_n, min_n = np.max(self.data[:, :, 2]), np.min(self.data[:, :, 2])
 
+        # Use the variables as needed
+        print(f'Max R: {max_r}')
+        print(f'Min R: {min_r}')
+        print(f'Max G: {max_g}')
+        print(f'Min G: {min_g}')
+        print(f'Max B: {max_n}')
+        print(f'Min B: {min_n}')
+
+        # Find the indices where the value equals the maximum value
+        max_indices_R = np.where(self.data[:, :, 0] == np.max(self.data[:, :, 0]))
+        max_indices_G = np.where(self.data[:, :, 1] == np.max(self.data[:, :, 1]))
+        max_indices_N = np.where(self.data[:, :, 2] == np.max(self.data[:, :, 2]))
+        # print(max_indices_R)
+
+        plt.figure(figsize=(14,8))
+        plt.suptitle('Max Stats')
+        plt.subplot(1, 2, 1)
+        plt.imshow(self._render_RGB())
+
+        # Add red spots at the maximum value locations
+        plt.scatter(max_indices_R[1], max_indices_R[0], color='red', label=max_r)
+        plt.scatter(max_indices_G[1], max_indices_G[0], color='green', label=max_g)
+        plt.scatter(max_indices_N[1], max_indices_N[0], color='blue', label=max_n)
+        plt.title(f'{self.path.stem}')
+        plt.axis(False)
+        plt.legend()
+
+        x = ['R', 'G', 'N']
+        mx = [max_r, max_g, max_n]
+        color = ['red', 'green', 'blue']
+        plt.subplot(1, 2, 2)
+        plt.bar(x, mx, color=color)
+        plt.ylim((0,4096))
+        plt.tight_layout(pad=1)
+        plt.title(f'Range')
+        plt.show()
 
     def dark_current_subtraction(self):
         mean_r = int(np.mean(self.data[:, :, 0]))
@@ -80,6 +121,7 @@ class MapIR_Radiance(MapIR):
         plt.legend()
         plt.show()
 
+    # Function to show horizontal vs vertical brightness in image
     def flat_field_correction(self):
         y_mid = 1500
         x_mid = 2000
@@ -134,8 +176,31 @@ class MapIR_Radiance(MapIR):
         plt.title(f'Vertical')
         plt.ylim((0, 4096))
         # plt.legend()
+
         plt.show()
 
-    def radiance_value(self):
-        pass
+
+    def radiance_values_center(self):
+        y_mid = 1500
+        x_mid = 2000
+        size = 50
+
+        average_value_R = np.mean(self.data[(y_mid - size):(y_mid + size), (x_mid - size):(x_mid + size), 0])
+        # print(f'R Mid Value: {self.data[y_mid, x_mid, 0]} | R Mid Average: {average_value_R}')
+        # print(f'R Average: {np.mean(self.data[:,:,0])}')
+        average_value_G = np.mean(self.data[(y_mid - size):(y_mid + size), (x_mid - size):(x_mid + size), 1])
+        # print(f'G Mid Value: {self.data[y_mid, x_mid, 1]} | G Mid Average: {average_value_G}')
+        # print(f'G Average: {np.mean(self.data[:, :, 1])}')
+        average_value_N = np.mean(self.data[(y_mid - size):(y_mid + size), (x_mid - size):(x_mid + size), 2])
+        # print(f'N Mid Value: {self.data[y_mid, x_mid, 2]} | N Mid Average: {average_value_N}')
+        # print(f'N Average: {np.mean(self.data[:, :, 2])}')
+        # print('-' * 50)
+
+        average_value_R = int(average_value_R.round(0))
+        average_value_G = int(average_value_G.round(0))
+        average_value_N = int(average_value_N.round(0))
+
+        # print(average_value_R, average_value_G, average_value_N)
+        return average_value_R, average_value_G, average_value_N
+
 
