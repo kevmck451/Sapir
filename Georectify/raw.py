@@ -10,7 +10,6 @@ import piexif
 import cv2
 import os
 
-
 # MapIR class to process RAW images
 class MapIR_RAW:
     def __init__(self, raw_file_path):
@@ -65,16 +64,10 @@ class MapIR_RAW:
             self.R_index, self.G_index, self.NIR_index = 0, 1, 2
 
             self._debayer()
-            self._radiometic_calibration()
-
-            # self._correct()
+            self._correct()
             # self._render_RGB()
 
-            # Normalize to 16 bit
-            # data = self.data
-            # data_norm = (data - np.min(data)) / (np.max(data) - np.min(data))
-            # data_scaled = data_norm * 65535
-            # self.data = data_scaled.astype(np.uint16)
+
 
         except:
             print(f'File Corrupt: {self.file_name}')
@@ -105,9 +98,8 @@ class MapIR_RAW:
 
     # Function to correct leakage in sensor
     def _correct(self):
-        # image_matrix = [[336.68, 74.61, 37.63], [33.52, 347.5, 41.77], [275.41, 261.99, 286.5]]
-        # image_matrix = [[7.18, 2.12, 1.02], [0.72, 9.86, 1.12], [5.88, 7.43, 7.74]]
-        image_matrix = [[336, 33, 275], [74, 347, 261], [37, 41, 286]]
+        # image_matrix = [[336, 33, 275], [74, 347, 261], [37, 41, 286]]
+        image_matrix = [[5481.53, 664.44, 4510.03], [1309.98, 5660.94, 4294.08], [740.54, 796.69, 4686.63]]
 
         # Calculate the inverse of the image matrix
         image_matrix = np.asarray(image_matrix)
@@ -122,6 +114,7 @@ class MapIR_RAW:
 
     # Function to display the data
     def _render_RGB(self, hist=False):
+
         Ra = self.data[:, :, 0]
         Ga = self.data[:, :, 1]
         Ba = self.data[:, :, 2]
@@ -153,11 +146,12 @@ class MapIR_RAW:
                 # reshape to 2d and add back to rgb_stack
                 rgb_stack[:, :, i] = b_equalized.reshape(b.shape)
 
-        self.rgb_render = rgb_stack
+        # self.rgb_render = rgb_stack
+        return rgb_stack
 
     # Function to display the data
     def display(self, hist=False):
-        rgb_stack = self.rgb_render
+        rgb_stack = self._render_RGB()
 
         # apply histogram equalization to each band
         if hist:
@@ -234,6 +228,12 @@ class MapIR_RAW:
 
     # Function to export image as 16-bit tiff
     def export_tiff(self):
+        # Normalize to 16 bit
+        data = self.data
+        data_norm = (data - np.min(data)) / (np.max(data) - np.min(data))
+        data_scaled = data_norm * 65535
+        self.data = data_scaled.astype(np.uint16)
+
         path = Path(self.file_path)
         save_as = f'{path.parent.parent}/_processed/{path.stem}.tiff'
         imageio.imsave(save_as, self.data, format='tiff')

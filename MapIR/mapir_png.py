@@ -6,8 +6,8 @@ from pathlib import Path
 import imageio.v2 as iio
 import numpy as np
 
-# MapIR class to analyze georectified images
-class MapIR:
+# MapIR class to analyze georectified images type png
+class MapIR_png:
     def __init__(self, raw_file_path):
 
         self.file_path = raw_file_path
