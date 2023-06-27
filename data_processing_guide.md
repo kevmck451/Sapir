@@ -1,6 +1,6 @@
 # MapIR Data Processing Guide
 
-This guide outlines the process of preparing and processing data captured from a MapIR camera, from the initial data backup to data processing and analysis. Follow the steps provided to effectively handle and analyze your captured data.
+This guide outlines the process_single of preparing and processing data captured from a MapIR camera, from the initial data backup to data processing and analysis. Follow the steps provided to effectively handle and analyze your captured data.
 
 ## Flight Data Selection
 
@@ -22,19 +22,19 @@ This guide outlines the process of preparing and processing data captured from a
 
 ## Data Processing
 
-To process your flight data, the directory must contain:
+To process_single your flight data, the directory must contain:
 
 - A 'raw' subfolder containing the RAW and JPG files
 - A RAW file of the reflectance target named 'ref_tar.RAW'
 
-Follow these steps to process your data:
+Follow these steps to process_single your data:
 
-1. **Run Processing Script**: From the MapIR package available at [GitHub](https://github.com/JacobsSensorLab/mapir), run the "process.py" file with the filepath to the directory as an argument.
+1. **Run Processing Script**: From the MapIR package available at [GitHub](https://github.com/JacobsSensorLab/mapir), run the "process_single.py" file with the filepath to the directory as an argument.
 
-2. **Post Processing Steps**: Once the process script runs, it will perform the following operations:
+2. **Post Processing Steps**: Once the process_single script runs, it will perform the following operations:
 
     - Rename files in the raw folder for easier processing
-    - Debayer and correct RAW files
+    - Debayer and band_correction RAW files
     - Apply radiance and reflectance calibration
     - Save processed files in a '_processed' folder in the directory as TIFF files
     - Generate a 'geo.txt' file for each processed file, used for georectification with WebODM

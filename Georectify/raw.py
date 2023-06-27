@@ -10,7 +10,7 @@ import piexif
 import cv2
 import os
 
-# MapIR class to process RAW images
+# MapIR class to process_single RAW images
 class MapIR_RAW:
     def __init__(self, raw_file_path):
         self.file_path = raw_file_path
@@ -96,7 +96,7 @@ class MapIR_RAW:
         data[data < 0] = 0
         self.data = data.astype(np.uint16)
 
-    # Function to correct leakage in sensor
+    # Function to band_correction leakage in sensor
     def _correct(self):
         # image_matrix = [[336, 33, 275], [74, 347, 261], [37, 41, 286]]
         image_matrix = [[5481.53, 664.44, 4510.03], [1309.98, 5660.94, 4294.08], [740.54, 796.69, 4686.63]]

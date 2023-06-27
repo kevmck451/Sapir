@@ -1,11 +1,16 @@
 # MapIR Radiance_Calibration Processing
 
 from MapIR.mapir import MapIR
-from Band_Correction.correction import correct
+from Band_Correction.correction import band_correction
 from Radiance_Calibration.radiance import dark_current_subtraction
+from Radiance_Calibration.radiance import flat_field_correction
+from data_filepaths import *
+
 import matplotlib.pyplot as plt
-import numpy as np
 from pathlib import Path
+from scipy.interpolate import interp1d
+import numpy as np
+
 
 
 # Function to Generate the Dark Current Subtraction Amount for Each Band
@@ -18,7 +23,7 @@ def generate_dark_current_values(directory):
     for file in files:
         if file.suffix == '.RAW':
             image = MapIR(file)
-            # image = correct(image)
+            # image = band_correction(image)
 
             r_mean_values.append(np.mean(image.data[:, :, 0]))
             g_mean_values.append(np.mean(image.data[:, :, 1]))
@@ -43,7 +48,7 @@ def generate_dark_current_values(directory):
 def generate_flat_field_correction(filepath, save=False):
     image = MapIR(filepath)
     image = dark_current_subtraction(image)
-    image = correct(image)
+    image = band_correction(image)
 
     red_flat = image.data[:, :, 0]
     green_flat = image.data[:, :, 1]
@@ -60,8 +65,79 @@ def generate_flat_field_correction(filepath, save=False):
 
     return red_ff_cor_matrix, green_ff_cor_matrix, nir_ff_cor_matrix
 
+# Function to Generate the Slope and Intercept values for Radiance Calibration
+def generate_radiance_equation_values(directory):
+    amp_values_exp1 = {0: 557.2368, 1: 534.7504, 2: 503.9878, 3: 468.3653, 4: 429.8584,
+                       5: 390.1801, 6: 349.9428, 7: 308.6331, 8: 265.2019, 9: 220.3712}
 
-# MapIR class to process RAW images
+    amp_values_exp2 = {0: 527.881, 1: 508.7342, 2: 479.506, 3: 445.5909, 4: 408.9898,
+                       5: 371.2294, 6: 332.9773, 7: 293.6617, 8: 252.3409, 9: 209.6933}
+
+    path = Path(directory)
+    name = path.parent.name
+    if path.parent.name == 'Exp 1':
+        amp_values = amp_values_exp1
+    else:
+        amp_values = amp_values_exp2
+
+
+    filepath = directory
+    sorted_files = sorted(Path(filepath).iterdir())
+
+    x_values = []
+    R_values = []
+    G_values = []
+    N_values = []
+
+    for i, file in enumerate(sorted_files):
+        if file.suffix == '.RAW':
+            image = MapIR_Radiance(file)
+            image = dark_current_subtraction(image)
+            image = band_correction(image)
+            image = flat_field_correction(image)
+            # image.display()
+
+            R, G, N = image.radiance_values_center()
+
+
+
+
+            # asdf
+
+# Function to dot product correction bands
+def filter_wavelengths():
+
+    mbands = np.load(MC_Test_Bands)
+    reds = np.load(MC_Test_Reds_Corr)
+    greens = np.load(MC_Test_Greens_Corr)
+    nirs = np.load(MC_Test_NIR_Corr)
+
+    lab_bands = np.load(labsphere_bands)
+    lab_rad_values = np.load(labsphere_rad_values)
+
+    # for band, r, g, n in zip(mbands, mreds, mgreens, mnir):
+    #     print(f'B: {band} \t |\t R: {r} \t |\t G: {g} \t |\t N: {n}')
+    #
+    # for band, val in zip(lab_bands, lab_rad_values):
+    #     print(f'B: {band} \t |\t V: {val}')
+
+    # interpolate values
+    red_interp = interp1d(mbands, reds, kind='linear')
+    green_interp = interp1d(mbands, greens, kind='linear')
+    nir_interp = interp1d(mbands, nirs, kind='linear')
+
+    red_rad = sum(red_interp(band) * rad for band, rad in zip(lab_bands, lab_rad_values))
+    green_rad = sum(green_interp(band) * rad for band, rad in zip(lab_bands, lab_rad_values))
+    nir_rad = sum(nir_interp(band) * rad for band, rad in zip(lab_bands, lab_rad_values))
+
+    print(red_rad)
+    print(green_rad)
+    print(nir_rad)
+
+
+
+
+# MapIR class to process_single RAW images
 class MapIR_Radiance(MapIR):
     def __init__(self, raw_file_path):
         super().__init__(raw_file_path)
@@ -254,9 +330,8 @@ class MapIR_Radiance(MapIR):
         average_value_G = np.mean(self.data[(y_mid - size):(y_mid + size), (x_mid - size):(x_mid + size), 1])
         average_value_N = np.mean(self.data[(y_mid - size):(y_mid + size), (x_mid - size):(x_mid + size), 2])
 
-        print(f'R: {average_value_R}\t |\t G: {average_value_G}\t |\t N: {average_value_N}')
+        # print(f'R: {average_value_R}\t |\t G: {average_value_G}\t |\t N: {average_value_N}')
         return average_value_R, average_value_G, average_value_N
-
 
     # Function to get average center values from images
     def radiance_values(self):
@@ -266,3 +341,4 @@ class MapIR_Radiance(MapIR):
 
         print(f'All: {average_value_R} | {average_value_G} | {average_value_N}')
         return average_value_R, average_value_G, average_value_N
+

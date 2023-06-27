@@ -2,6 +2,7 @@
 
 from MapIR.mapir import MapIR
 from pathlib import Path
+from process import process_single
 
 def process(base_directory):
     bd = Path(base_directory)
@@ -26,26 +27,17 @@ def process(base_directory):
     if not processed_directory.exists():
         processed_directory.mkdir()
 
+    # directory = raw_directory
+    directory = bd
     # Process Image
-    for file in raw_directory.iterdir():
+    for file in directory.iterdir():
         if file.suffix == '.RAW':
-            # Create MapIR Object
-            image = MapIR(file)
-            # Band_Correction
-
-            # Radiance_Calibration
-
-            # Reflectance Calibration
-
-            # Georectification
-            # image.extract_GPS('tiff')
-            # image.export_tiff()
-            # Analysis
+            process_single(file)
 
 
 if __name__ == '__main__':
     # base_directory = '../Data/MapIR/AC Summer 23/Wheat Field/6-20'
     # base_directory = '../Data/MapIR/AC Summer 23/Main Sub Field/6-20'
-    base_directory = '../Data/MapIR/Test'
+    base_directory = '../Data/MapIR/Radiance Calibration/Experiments/Exp 1/raw'
 
     process(base_directory)

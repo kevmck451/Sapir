@@ -9,12 +9,14 @@ single_1 = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/Data/MapIR/AC Su
 single_2 = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/Data/MapIR/MC Tests/MC Test 4/RAW/850.RAW'
 
 # Function to apply correction to MapIR Object
-def correct(mapir_object, corr_values=None):
+def band_correction(mapir_object, corr_values=None):
     if corr_values is None:
         # Monochromator Exp 4 Values from paper
         # image_matrix = [[336, 33, 275], [74, 347, 261], [37, 41, 286]]
         # Monochromator Exp 4 Values after data (changed data type / ratios same)
-        image_matrix = [[5481.53, 664.44, 4510.03], [1309.98, 5660.94, 4294.08], [740.54, 796.69, 4686.63]]
+        # image_matrix = [[5481.53, 664.44, 4510.03], [1309.98, 5660.94, 4294.08], [740.54, 796.69, 4686.63]]
+        # after dark current subtraction
+        image_matrix = [[5365.73, 540.92, 4394.23], [1196.12, 5539.49, 4180.21], [625.38, 689.21, 4571.48]]
 
     else:
         # Values injected from Experiment

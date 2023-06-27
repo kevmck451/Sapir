@@ -96,7 +96,7 @@ def _get_interleave_shape(interleave, bands, lines, samples):
         raise ValueError(f"bad interleave setting {interleave}")
 
 def _parse_header_attrs(header):
-    # parse core attributes out of the header (and remove them in the process)
+    # parse core attributes out of the header (and remove them in the process_single)
     dtype = _parse_data_type(
         header.pop("byte order", 0), # assume little endian by default
         header.pop("data type"))

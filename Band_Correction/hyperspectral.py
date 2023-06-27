@@ -1,8 +1,9 @@
 
 
+from Band_Correction.hyp_envi import Cube
+
 import matplotlib.pyplot as plt
 from copy import deepcopy
-from hyp_envi import Cube
 import numpy as np
 import scipy.io
 import random

@@ -14,14 +14,14 @@ bd = Path(base_directory)
 
 
 from mapir import MapIR
-from Band_Correction.correction import correct
+from Band_Correction.correction import band_correction
 from Analysis.vegetation_index import NDVI
 
 image = MapIR(bd)
 # image.dial_in()
 image.display()
 # NDVI(image)
-image_1 = correct(image)
+image_1 = band_correction(image)
 image_1.display()
 # NDVI(image_1)
 # image.export_tiff()

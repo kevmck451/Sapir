@@ -34,9 +34,24 @@ def flat_field_correction(mapir_object):
 
     return mapir_ob
 
-def radiate(mapir_object):
+def radiance_calibration(mapir_object):
     mapir_ob = deepcopy(mapir_object)
     mapir_ob.stage = 'Radiance Calibration'
+
+    print(np.max(mapir_ob.data))
+    print(np.min(mapir_ob.data))
+
+    R_Slope, R_Intercept = 0.0003402005902066505, 0.0012468486308381266
+    G_Slope, G_Intercept = 0.00031388332822205776, -0.0004053664072229679
+    N_Slope, N_Intercept = 0.0005554327346120772, -0.0007496041996818137
+
+    # Rad = (DN - b) / m
+    mapir_ob.data[:, :, 0] = (mapir_ob.data[:, :, 0] - R_Intercept) / R_Slope
+    mapir_ob.data[:, :, 1] = (mapir_ob.data[:, :, 1] - G_Intercept) / G_Slope
+    mapir_ob.data[:, :, 2] = (mapir_ob.data[:, :, 2] - N_Intercept) / N_Slope
+
+    print(np.max(mapir_ob.data))
+    print(np.min(mapir_ob.data))
 
     # Normalize
     # mapir_ob.data = np.round(mapir_ob.data * mapir_ob.max_raw_pixel_value).astype('int16')
