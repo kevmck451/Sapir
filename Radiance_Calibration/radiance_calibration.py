@@ -65,47 +65,8 @@ def generate_flat_field_correction(filepath, save=False):
 
     return red_ff_cor_matrix, green_ff_cor_matrix, nir_ff_cor_matrix
 
-# Function to Generate the Slope and Intercept values for Radiance Calibration
-def generate_radiance_equation_values(directory):
-    amp_values_exp1 = {0: 557.2368, 1: 534.7504, 2: 503.9878, 3: 468.3653, 4: 429.8584,
-                       5: 390.1801, 6: 349.9428, 7: 308.6331, 8: 265.2019, 9: 220.3712}
-
-    amp_values_exp2 = {0: 527.881, 1: 508.7342, 2: 479.506, 3: 445.5909, 4: 408.9898,
-                       5: 371.2294, 6: 332.9773, 7: 293.6617, 8: 252.3409, 9: 209.6933}
-
-    path = Path(directory)
-    name = path.parent.name
-    if path.parent.name == 'Exp 1':
-        amp_values = amp_values_exp1
-    else:
-        amp_values = amp_values_exp2
-
-
-    filepath = directory
-    sorted_files = sorted(Path(filepath).iterdir())
-
-    x_values = []
-    R_values = []
-    G_values = []
-    N_values = []
-
-    for i, file in enumerate(sorted_files):
-        if file.suffix == '.RAW':
-            image = MapIR_Radiance(file)
-            image = dark_current_subtraction(image)
-            image = band_correction(image)
-            image = flat_field_correction(image)
-            # image.display()
-
-            R, G, N = image.radiance_values_center()
-
-
-
-
-            # asdf
-
 # Function to dot product correction bands
-def filter_wavelengths():
+def generate_rad_val_fully_open():
 
     mbands = np.load(MC_Test_Bands)
     reds = np.load(MC_Test_Reds_Corr)
@@ -134,7 +95,18 @@ def filter_wavelengths():
     print(green_rad)
     print(nir_rad)
 
+    '''
+    radiance values at fully open:
+    R = 150.11074734882624
+    G = 96.22091612057928
+    N = 223.14803041806604
+    '''
 
+    return red_rad, green_rad, nir_rad
+
+# Function to Generate the Slope and Intercept values for Radiance Calibration
+def generate_radiance_equation_values(directory):
+    pass
 
 
 # MapIR class to process_single RAW images

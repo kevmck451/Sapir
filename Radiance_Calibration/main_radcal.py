@@ -8,6 +8,7 @@ from data_filepaths import *
 
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 import csv
 
 
@@ -238,7 +239,7 @@ def radiance_plot(directory):
     ax1.plot(x_values, R_values, color='red', marker='s', label='Red')
     ax1.plot(x_values, G_values, color='green', marker='s', label='Green')
     ax1.plot(x_values, N_values, color='blue', marker='s', label='NIR')
-    ax1.set_xlabel('LapSphere Amp Values')
+    ax1.set_xlabel('LabSphere Amp Values')
     ax1.set_ylabel('Digital Numbers')
     ax1.legend()
     ax1.set_xticks([x for x in amp_values.values()])
@@ -248,7 +249,7 @@ def radiance_plot(directory):
     ax2.plot(x_line, r_slope * x_line + r_intercept, color='red', label='Red Fit')
     ax2.plot(x_line, g_slope * x_line + g_intercept, color='green', label='Green Fit')
     ax2.plot(x_line, n_slope * x_line + n_intercept, color='blue', label='NIR Fit')
-    ax2.set_xlabel('LapSphere Amp Values')
+    ax2.set_xlabel('LabSphere Amp Values')
     ax2.set_ylabel('Estimated Digital Numbers')
     ax2.axhline(y=0, color='black', linestyle='dotted')
     ax2.axvline(x=0, color='black', linestyle='dotted')
@@ -276,7 +277,7 @@ def get_labsphere_values(filepath):
     np.save(f'labsphere/labsphere_bands.npy', lab_bands)
     np.save(f'labsphere/labsphere_rad_vals.npy', lab_rad_values)
 
-# Function to dot product correction bands
+# Function to display wavelength response vs labsphere radiance
 def filter_wavelengths_graph():
 
     mbands = np.load(MC_Test_Bands)
@@ -325,7 +326,112 @@ def filter_wavelengths_graph():
     plt.tight_layout(pad=1)
     plt.show()
 
+# Convert DN to Rad values
+def DN_to_Rad_Conversion(directory):
+    amp_values_exp1 = {0: 557.2368, 1: 534.7504, 2: 503.9878, 3: 468.3653, 4: 429.8584,
+                       5: 390.1801, 6: 349.9428, 7: 308.6331, 8: 265.2019, 9: 220.3712}
 
+    amp_values_exp2 = {0: 527.881, 1: 508.7342, 2: 479.506, 3: 445.5909, 4: 408.9898,
+                       5: 371.2294, 6: 332.9773, 7: 293.6617, 8: 252.3409, 9: 209.6933}
+
+    labsphere_fully_open_amps = 525.517
+
+    # function to multiply amp values by e^-6
+    mult_e_n6 = lambda num: num * math.exp(-6)
+
+    # Choose amp values depending on which directory is given
+    path = Path(directory)
+    name = path.parent.name
+    print(name)
+    if path.parent.name == 'Exp 1': amp_values = amp_values_exp1
+    else: amp_values = amp_values_exp2
+
+    # Create amp offset based on labsphere's fully open amps value
+    amp_offset = (amp_values.get(0) / labsphere_fully_open_amps)
+    print(f'Offset Value: {amp_offset}')
+
+    offset_amp_values = [mult_e_n6(value * amp_offset) for key, value in amp_values.items()]
+    offset_amp_values.sort()
+    print(f'New Amp List: {offset_amp_values}')
+
+    # Generate R, G, N values for labsphere experiment files
+    sorted_files = sorted(Path(directory).iterdir(), reverse=True)
+
+    R_values = []
+    G_values = []
+    N_values = []
+
+    for file in sorted_files:
+        if file.suffix == '.RAW':
+            image = MapIR_Radiance(file)
+            image = dark_current_subtraction(image)
+            image = band_correction(image)
+            image = flat_field_correction(image)
+
+            R, G, N = image.radiance_values_center()
+            # R, G, N = image.radiance_plot()
+
+            R_values.append(R)
+            G_values.append(G)
+            N_values.append(N)
+
+    # THIS IS WHERE WE WILL ADJUST FOR SHUTTER SPEED
+    # R_fully_open, G_fully_open, N_fully_open = generate_rad_val_fully_open()
+
+    # radiance values at fully open:
+    R_fully_open = 150.11074734882624
+    G_fully_open = 96.22091612057928
+    N_fully_open = 223.14803041806604
+
+    print(f'R DN at Fully Open: {R_values[-1]}')
+    print(f'G DN at Fully Open: {G_values[-1]}')
+    print(f'N DN at Fully Open: {N_values[-1]}')
+
+
+
+
+
+
+
+
+
+
+    # # Generate x values for regression lines
+    # x_line = np.linspace(0, 600, 100)
+    #
+    # # First, perform linear regression to find the best fit lines
+    # r_slope, r_intercept, _, _, _ = stats.linregress(offset_amp_values, R_values)
+    # g_slope, g_intercept, _, _, _ = stats.linregress(offset_amp_values, G_values)
+    # n_slope, n_intercept, _, _, _ = stats.linregress(offset_amp_values, N_values)
+    #
+    # # Create a figure with two subplots
+    # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+    # plt.suptitle(name)
+    #
+    # # First subplot
+    # ax1.set_title('Radiance Plot')
+    # ax1.plot(offset_amp_values, R_values, color='red', marker='s', label='Red')
+    # ax1.plot(offset_amp_values, G_values, color='green', marker='s', label='Green')
+    # ax1.plot(offset_amp_values, N_values, color='blue', marker='s', label='NIR')
+    # ax1.set_xlabel('LabSphere Amp Values')
+    # ax1.set_ylabel('Digital Numbers')
+    # ax1.legend()
+    # ax1.set_xticks([round(x,2) for x in offset_amp_values])
+    #
+    # # Second subplot
+    # ax2.set_title('Linear Regression Lines')
+    # ax2.plot(x_line, r_slope * x_line + r_intercept, color='red', label='Red Fit')
+    # ax2.plot(x_line, g_slope * x_line + g_intercept, color='green', label='Green Fit')
+    # ax2.plot(x_line, n_slope * x_line + n_intercept, color='blue', label='NIR Fit')
+    # ax2.set_xlabel('LabSphere Amp Values')
+    # ax2.set_ylabel('Estimated Digital Numbers')
+    # ax2.axhline(y=0, color='black', linestyle='dotted')
+    # ax2.axvline(x=0, color='black', linestyle='dotted')
+    # ax2.legend()
+    #
+    # # Automatically adjust the layout
+    # plt.tight_layout(pad=1)
+    # plt.show()
 
 
 
@@ -343,8 +449,11 @@ if __name__ == '__main__':
 
     # get_labsphere_values(labsphere_doc)
     # filter_wavelengths_graph()
-    filter_wavelengths()
+    # generate_rad_val_fully_open()
 
+    # relate rad vals for fully open to others
+    DN_to_Rad_Conversion(labsphere_experiment_1_raw)
+    # DN_to_Rad_Conversion(labsphere_experiment_2_raw)
 
     # generate_radiance_equation_values(base_path / 'Experiments/Exp 1/raw')
 

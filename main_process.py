@@ -2,7 +2,7 @@
 
 from MapIR.mapir import MapIR
 from pathlib import Path
-from process import process_single
+from Process.process import process_single
 
 def process(base_directory):
     bd = Path(base_directory)
