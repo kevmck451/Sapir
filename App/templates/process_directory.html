@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+    <h2>How to Use</h2>
+    <p>Information on how to use will be updated later.</p>
+</section>
+<section>
+    <h2>Process Full Directory</h2>
+    <p>Please choose the directory you wish to process:</p>
+    <form>
+        <input type="file" id="directory" name="directory" webkitdirectory directory>
+        <input type="submit" value="Process">
+    </form>
+</section>
+{% endblock %}

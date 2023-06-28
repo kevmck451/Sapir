@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+    <h2>How to Use</h2>
+    <p>Information on how to use will be updated later.</p>
+</section>
+<section>
+    <h2>Process Single Image</h2>
+    <form>
+        <p>Please choose the .RAW image file you wish to process:</p>
+        <input type="file" id="imageFile" name="imageFile" accept=".RAW">
+        <input type="submit" value="Upload Image">
+    </form>
+    <form>
+        <p>Please choose the reflectance target file (ref_tar.RAW):</p>
+        <input type="file" id="targetFile" name="targetFile" accept=".RAW">
+        <input type="submit" value="Upload Reflectance Target">
+    </form>
+</section>
+
+{% endblock %}

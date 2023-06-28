@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Process MapIR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>{% block header %}MapIR Processing Application{% endblock %}</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('process_file') }}">Process File</a></li>
+            <li><a href="{{ url_for('process_directory') }}">Process Directory</a></li>
+            <li><a href="{{ url_for('data_processing') }}">Data Processing Guide</a></li>
+            <li><a href="{{ url_for('data_collection') }}">Data Collection Guide</a></li>
+        </ul>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main>
+    <h1>MapIR Data Collection Guide</h1>
+
+    <h2>Equipment List</h2>
+    <ul>
+        <li>Reflectance Target</li>
+        <li>DJI Mavic Pro Case
+            <ul>
+                <li>Drone Batteries</li>
+                <li>Drone</li>
+                <li>Controller</li>
+                <li>Controller Phone with Litchi</li>
+                <li>Controller to Phone Cable</li>
+                <li>MapIR Camera in Mount with lens cover</li>
+                <li>Four M2 Mounting Screws</li>
+                <li>Hex Screw Driver</li>
+                <li>Mavic SD Card</li>
+                <li>MapIR SD Card</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Preflight Prep</h2>
+    <ul>
+        <li>Mavic Batteries Charged</li>
+        <li>Controller Charged</li>
+        <li>Phone Charged</li>
+        <li>MapIR Camera Charged</li>
+        <li>Flight Plans saved with Litchi (if applicable)</li>
+    </ul>
+
+    <h2>Flight Plans</h2>
+    <p>Litchi Website: <a href="https://flylitchi.com/hub?m=2yTUWjyKV2">https://flylitchi.com/hub?m=2yTUWjyKV2</a></p>
+    <ul>
+        <li>Create an account</li>
+        <li>Create a flight plan and save</li>
+        <li>Login to litchi on phone</li>
+        <li>Open flight plan</li>
+        <li>Execute</li>
+    </ul>
+
+    <h2>Flight Planning Parameters</h2>
+    <ul>
+        <li>Max Height: 400ft (unless authorization from FAA)</li>
+        <li>Cruising Speed: 15-17 mph</li>
+        <li>Max Speed: 18 mph</li>
+        <li>Takeoff Speed: 5 mph (if faster, props can flex and hit mount)</li>
+        <li>Orientation: point the front towards the longest row being flown. This gives the widest field of view.</li>
+        <li>Max Flight Time per battery: 15-18mins</li>
+        <li>Overlap: at 400ft, passes should can be between 150 and 450ft apart</li>
+        <li>If surveying large area, choose a larger gap (450) to save time</li>
+        <li>If time is not a factor, a larger overlap can create a better image</li>
+        <li>If takeoff spot is unknown when planning flight, you can always takeoff manually and then load the flight plan</li>
+        <li>Depending on the signal strength and the outside temperature, it can take 1-3 mins for the flight to upload which could decrease flight time. If your flight is already maxed out, then this wouldn't work and you would need to figure out exactly where the takeoff spot is and load the flight before the Mavic takeoff.</li>
+    </ul>
+
+    <h2>Flight Setup</h2>
+<ul>
+    <li>Attach phone to controller with appropriate cable and unfold antennas</li>
+    <li>Unfold Mavic Legs</li>
+    <li>Insert battery into Mavic</li>
+    <li>Attach MapIR mount to Mavic with screws</li>
+    <li>Turn on MapIR camera by holding front button</li>
+    <li>Press settings icon in bottom left corner
+        <ul>
+            <li>It may ask you to unlock screen by dragging fingers on screen in opposite direction</li>
+        </ul>
+    </li>
+    <li>Swipe to last page and press "Format" to clear the SD card</li>
+    <li>Swipe from top to bottom to go back to camera display</li>
+    <li>Press the camera setting icon in the bottom right</li>
+    <li>Double check settings:
+        <ul>
+            <li>Shutter Speed:
+                <ul>
+                    <li>If really cloudy: 1/60</li>
+                    <li>If really sunny: 1/90</li>
+                </ul>
+            </li>
+            <li>Interval: 0.5 s</li>
+            <li>Exposure: 0</li>
+            <li>RAW: On</li>
+        </ul>
+    </li>
+    <li>Remove MapIR silicon lens cover</li>
+    <li>Remove Mavic clear plastic camera cover</li>
+    <li>Place Mavic at takeoff spot with reflectance target in front on ground in front of it</li>
+    <li>Open Litchi app on phone</li>
+    <li>Turn on controller with power button (top right): short press then long press until on</li>
+    <li>Turn on Mavic with button on battery: short press then long press until lights light up</li>
+    <li>Make sure Mavic Camera is pointed straight down</li>
+    <li>Settings on Litchi app to take RGB images with Mavic
+        <ul>
+            <li>Camera Mode (not video mode)</li>
+            <li>Highest resolution possible</li>
+            <li>Set interval rate to lowest possible (0.5 to 1 sec)</li>
+        </ul>
+    </li>
+    <li>Wait until satellites are acquired and GPS is good (top of phone screen will be green)</li>
+    <li>Load flight plan from Litchi (must be logged in)</li>
+    <li>When ready, start MapIR camera by pressing top button (it will start beeping) and start mission</li>
+    <li>If emergency arises, you can stop the flight on the phone in the Litchi App</li>
+    <li>If Mavic reaches low battery threshold, it will return to takeoff point</li>
+</ul>
+
+<h2>Post Flight</h2>
+<ul>
+    <li>Once Mavic has landed, stop MapIR camera by pressing top button. First press will wake up screen and 2nd press will stop the camera</li>
+    <li>Check that you did indeed get data from the flight by checking the playback section of the camera</li>
+    <li>Swipe from left to right to get to the playback area</li>
+    <li>Turn off Mavic by short/long press the battery button until lights turn off</li>
+    <li>If another flight is planned, replace battery and continue:</li>
+    <li>If that is the end:
+        <ul>
+            <li>Turn off MapIR camera by pressing and holding front button</li>
+            <li>Turn off controller with short/long press to power button</li>
+            <li>Turn off phone (if not a personal device)</li>
+            <li>Remove MapIR mount and place screws back in plastic bag</li>
+            <li>Pack up Mavic Case</li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Maintenance</h2>
+<ul>
+    <li>Mavic batteries will decharge overtime. If they have not been used in a couple weeks, then they will most likely be at less than full charge. If the drone has not been used in a while make sure to charge the batteries before flight even if they were fully charged before. You should charge the batteries after every flight.</li>
+    <li>The controller has a significantly longer battery life. You can get about 10 - 20 flights per controller charge.</li>
+    <li>The MapIR camera can do 7-8 flights on a single charge</li>
+</ul>
+</main>
+{% endblock %}
+
+

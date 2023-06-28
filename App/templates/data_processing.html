@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main>
+<h1>MapIR Data Processing Guide</h1>
+<p>This guide outlines the process_single of preparing and processing data captured from a MapIR camera, from the initial data backup to data processing and analysis. Follow the steps provided to effectively handle and analyze your captured data.</p>
+
+<h2>Flight Data Selection</h2>
+<ol>
+    <li><strong>Extract Data from SD Card</strong>: Carefully remove the SD card from the MapIR camera. The card should contain both .RAW and .JPG files.</li>
+    <li><strong>Backup the Files</strong>: Select all files and drag and drop them to a secure backup location on your computer.</li>
+    <li><strong>Create a Processing Directory</strong>: Create a new directory on your computer where the data will be processed. Add a subfolder named "raw" to this new directory.</li>
+    <li><strong>Identify Reflectance Target Image</strong>: Go to the backup folder and sort the files by type. Look through the JPG images to find a clear, focused image of the reflectance target. Note that the corresponding RAW file for this image should be one number lower than the JPG file. For example, if the JPG image is "2022_0818_055945_118.JPG", the raw file name will be "2022_0818_055945_117.RAW".</li>
+    <li><strong>Copy Reflectance Target File</strong>: Copy the RAW file corresponding to the reflectance target to the new directory. Rename this file to "ref_tar.RAW".</li>
+    <li><strong>Identify Flight Start and End Points</strong>: Navigate through the JPG images in the backup folder to find the point after ascent, right as the flight is about to begin. Note the filename of this image. Also identify the image that represents the end of the flight over the area of interest and note its filename.</li>
+    <li><strong>Select Relevant Flight Data</strong>: Resort the files by their name and select the files within the range identified in step 6. Remember that the RAW filenames are one number lower than their JPG counterparts.</li>
+    <li><strong>Move Selected Files</strong>: Move the selected RAW and JPG files to the "raw" subfolder in the new directory. Your directory is now ready for data processing.</li>
+</ol>
+
+<h2>Data Processing</h2>
+<p>To process_single your flight data, the directory must contain:</p>
+<ul>
+    <li>A 'raw' subfolder containing the RAW and JPG files</li>
+    <li>A RAW file of the reflectance target named 'ref_tar.RAW'</li>
+</ul>
+</main>
+{% endblock %}

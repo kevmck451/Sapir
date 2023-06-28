@@ -80,7 +80,7 @@
 ## Post Flight
 - Once Mavic has landed, stop MapIR camera by pressing top button. First press will wake up screen and 2nd press will stop the camera
 - Check that you did indeed get data from the flight by checking the playback section of the camera
-- Swipe from left to right to get to the playback area
+- Press the icon at the bottom middle to get to the playback area
 - Turn off Mavic by short/long press the battery button until lights turn off
 - If another flight is planned, replace battery and continue:
 - If that is the end:

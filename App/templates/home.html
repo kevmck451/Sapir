@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+    <h2>Welcome to MapIR Image Processing</h2>
+    <p>This application is designed to help you process your MapIR images. Here you can upload a directory or a single image file to be processed. The step-by-step guides will assist you through the process.</p>
+</section>
+<section>
+    <h2>How to Use</h2>
+    <p>For specific instructions on how to use this application, visit the "Process Directory" or "Process File" sections. Information on data collection and processing can be found in their respective guides.</p>
+</section>
+<section>
+    <p>Agricenter International: Wheat Field on 6/8/23 - RGB Image / RGN Image / NDVI Analysis</p>
+    <div class="image-row">
+        <img class="resized-image" src="{{ url_for('static', filename='images/6-8 RGB.png') }}" alt="Wheat Field RGB">
+        <img class="resized-image" src="{{ url_for('static', filename='images/6-8 RGN.png') }}" alt="Wheat Field RGN">
+        <img class="resized-image" src="{{ url_for('static', filename='images/6-8 NDVI.png') }}" alt="Wheat Field NDVI">
+    </div>
+</section>
+{% endblock %}
