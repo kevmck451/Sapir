@@ -9,6 +9,7 @@ from data_filepaths import *
 
 from pathlib import Path
 
+
 def process_single(file):
     # Create MapIR Object
     image = MapIR(file)
@@ -25,28 +26,32 @@ def process_single(file):
 
     # Flat Field Correction
     image = flat_field_correction(image)
-    image.display()
-
-    # Radiance_Calibration
-    # image = radiance_calibration(image)
     # image.display()
 
+    # Radiance_Calibration
+    image = radiance_calibration(image)
+    image.display()
+
     # Reflectance Calibration
+    # image = reflectance_calibration(image)
+    # image.display()
 
     # Georectification
     # image.extract_GPS('tiff')
-    # image.export_tiff()
+    # filepath = ''
+    # image.export_tiff(filepath)
     # image.display()
 
     # Analysis
     # NDVI(image)
 
+
+
+
 if __name__ == '__main__':
 
-    directory = sorted(Path(labsphere_experiment_1_raw).iterdir())
-
-    for filepath in directory:
-        process_single(filepath)
+    # process_single(WF_68_81)
+    process_single(WF_68_177)
 
 
 

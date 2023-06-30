@@ -84,3 +84,5 @@ def NDVI_area_values(mapir_object, corr, middle_pixel):
 
         average_value = ndvi_array[y1:y2, x1:x2].mean()
         print(average_value)
+
+# OSAVI

@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from scipy.interpolate import interp1d
 import numpy as np
+from scipy import stats
 
 
 
@@ -65,48 +66,92 @@ def generate_flat_field_correction(filepath, save=False):
 
     return red_ff_cor_matrix, green_ff_cor_matrix, nir_ff_cor_matrix
 
-# Function to dot product correction bands
-def generate_rad_val_fully_open():
+# Function to Generate the Slope and Intercept values for Radiance Calibration
+def generate_radiance_equation_values(directory):
 
+    # Generate R, G, N values for labsphere experiment files
+    sorted_files = sorted(Path(directory).iterdir(), reverse=True)
+
+    R_values = []
+    G_values = []
+    N_values = []
+
+    for file in sorted_files:
+        if file.suffix == '.RAW':
+            image = MapIR_Radiance(file)
+            image = dark_current_subtraction(image)
+            image = band_correction(image)
+            image = flat_field_correction(image)
+
+            R, G, N = image.radiance_values_center()
+            # R, G, N = image.labsphere_value_plot()
+
+            R_values.append(R)
+            G_values.append(G)
+            N_values.append(N)
+
+    # Lab Sphere Experiment Amp Values for each image
+    amp_values_exp1 = {0: 557.2368, 1: 534.7504, 2: 503.9878, 3: 468.3653, 4: 429.8584,
+                       5: 390.1801, 6: 349.9428, 7: 308.6331, 8: 265.2019, 9: 220.3712}
+
+    amp_values_exp2 = {0: 527.881, 1: 508.7342, 2: 479.506, 3: 445.5909, 4: 408.9898,
+                       5: 371.2294, 6: 332.9773, 7: 293.6617, 8: 252.3409, 9: 209.6933}
+
+    # From Lab Sphere calibration documents (actual number times 10^-6)
+    labsphere_fully_open_amps = 525.517
+
+    # Choose amp values depending on which directory is given
+    path = Path(directory)
+    name = path.parent.name
+    # print(name)
+    if path.parent.name == 'Exp 1':
+        amp_values = amp_values_exp1
+    else:
+        amp_values = amp_values_exp2
+
+    # Create amp ratio offset based on labsphere's fully open amps value
+    amp_offset = (amp_values.get(0) * (10 ** -6) / labsphere_fully_open_amps * (10 ** -6))
+    # print(f'Offset Value: {amp_offset}')
+
+    offset_amp_values = [value * (10 ** -6) for _, value in amp_values.items()]
+    offset_amp_values.sort()
+    # print(f'New Amp List: {offset_amp_values}')
+
+    # Open corrected wavelength values
     mbands = np.load(MC_Test_Bands)
     reds = np.load(MC_Test_Reds_Corr)
     greens = np.load(MC_Test_Greens_Corr)
     nirs = np.load(MC_Test_NIR_Corr)
 
+    # Open labsphere band radiance values from calibration documents
     lab_bands = np.load(labsphere_bands)
     lab_rad_values = np.load(labsphere_rad_values)
 
-    # for band, r, g, n in zip(mbands, mreds, mgreens, mnir):
-    #     print(f'B: {band} \t |\t R: {r} \t |\t G: {g} \t |\t N: {n}')
-    #
-    # for band, val in zip(lab_bands, lab_rad_values):
-    #     print(f'B: {band} \t |\t V: {val}')
-
-    # interpolate values
+    # Interpolate values from corrected wavelength values
     red_interp = interp1d(mbands, reds, kind='linear')
     green_interp = interp1d(mbands, greens, kind='linear')
     nir_interp = interp1d(mbands, nirs, kind='linear')
 
+    # Dot product corrected wavelength vals with labsphere radiance vals
     red_rad = sum(red_interp(band) * rad for band, rad in zip(lab_bands, lab_rad_values))
     green_rad = sum(green_interp(band) * rad for band, rad in zip(lab_bands, lab_rad_values))
     nir_rad = sum(nir_interp(band) * rad for band, rad in zip(lab_bands, lab_rad_values))
 
-    print(red_rad)
-    print(green_rad)
-    print(nir_rad)
+    # Multiply the those values with the offsetted amp values from experiment
+    r_rad_vals = [red_rad * amp_val for amp_val in offset_amp_values]
+    g_rad_vals = [green_rad * amp_val for amp_val in offset_amp_values]
+    n_rad_vals = [nir_rad * amp_val for amp_val in offset_amp_values]
 
-    '''
-    radiance values at fully open:
-    R = 150.11074734882624
-    G = 96.22091612057928
-    N = 223.14803041806604
-    '''
+    # Linear regression to find the best fit lines
+    r_slope, r_intercept, _, _, _ = stats.linregress(R_values, r_rad_vals)
+    g_slope, g_intercept, _, _, _ = stats.linregress(G_values, g_rad_vals)
+    n_slope, n_intercept, _, _, _ = stats.linregress(N_values, n_rad_vals)
 
-    return red_rad, green_rad, nir_rad
+    print(f'R_Slope, R_Intercept = {r_slope}, {r_intercept}')
+    print(f'G_Slope, G_Intercept = {g_slope}, {g_intercept}')
+    print(f'N_Slope, N_Intercept = {n_slope}, {n_intercept}')
 
-# Function to Generate the Slope and Intercept values for Radiance Calibration
-def generate_radiance_equation_values(directory):
-    pass
+    return (r_slope, r_intercept), (g_slope, g_intercept), (n_slope, n_intercept)
 
 
 # MapIR class to process_single RAW images

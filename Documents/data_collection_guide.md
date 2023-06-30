@@ -55,8 +55,8 @@
 - Press the camera setting icon in the bottom right 
 - Double check settings:
   - Shutter Speed:
-    - If really cloudy: 1/60
-    - If really sunny: 1/90
+    - If it's cloudy: 1/60 (MapIR recommends 1/125)
+    - If it's sunny: 1/90 (MapIR recommends 1/250)
   - Interval: 0.5 s
   - Exposure: 0
   - RAW: On

@@ -1,5 +1,26 @@
 # File to house all the data directories for iteration
 
+
+# ------------------------------
+# INDIVIDUAL DATASET FILES -----
+# ------------------------------
+
+main_field_22 = '../Data/MapIR/AC Summer 22/main field'
+full_area_22 = '../Data/MapIR/AC Summer 22/full area'
+
+wheat_field_6_8 = '../Data/MapIR/AC Summer 23/Wheat Field/6-20'
+wheat_field_6_20 = '../Data/MapIR/AC Summer 23/Wheat Field/6-20'
+main_sub_field_6_20 = '../Data/MapIR/AC Summer 23/Main Sub Field/6-20'
+
+# Wheat Field Test Files
+WF_68_177 = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/Data/MapIR/AC Summer 23/Wheat Field/6-8/raw/177.RAW'
+WF_68_81 = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/Data/MapIR/AC Summer 23/Wheat Field/6-8/raw/081.RAW'
+
+
+# ---------------------------
+# LABSPHERE EXPERIMENTS -----
+# ---------------------------
+
 labsphere_doc = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/Data/MapIR/Radiance Calibration/LabSphere_Values.csv'
 labsphere_bands = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/MapIR_py/Radiance_Calibration/labsphere/labsphere_bands.npy'
 labsphere_rad_values = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/MapIR_py/Radiance_Calibration/labsphere/labsphere_rad_vals.npy'
@@ -13,13 +34,9 @@ labsphere_experiment_2_dial_ins = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 I
 labsphere_experiment_2_raw = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/Data/MapIR/Radiance Calibration/Experiments/Exp 2/raw'
 
 
-# Wheat Field Test Files
-WF_68_177 = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/Data/MapIR/AC Summer 23/Wheat Field/6-8/raw/177.RAW'
-WF_68_81 = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/Data/MapIR/AC Summer 23/Wheat Field/6-8/raw/081.RAW'
-
-
-
-'''Band Correction'''
+# -------------------------------
+# MONOCHROMATOR EXPERIMENTS -----
+# -------------------------------
 
 # Monochromator Experiment 4
 MC_Exp_4 = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 Imaging/Data/MapIR/MC Tests/MC Test 4'

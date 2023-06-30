@@ -33,6 +33,7 @@ class MapIR:
             else:
                 self._unpack()
                 self._debayer()
+                self.check_over_exposure()
 
     # Function to unpack the data
     def _unpack(self):
@@ -132,6 +133,13 @@ class MapIR:
         plt.title(f'Range')
         plt.show()
 
+    # Function to check for over exposure
+    def check_over_exposure(self):
+        if np.max(self.data) >= (self.max_raw_pixel_value-3):
+            # print('image contains over exposed pixels')
+            self.over_exposure = True
+        else: self.over_exposure = False
+
     # Function to convert data to 8 bit range
     def normalize(self):
         if self.stage == 'RAW Form' or self.stage == 'Dark Current Subtraction':
@@ -143,12 +151,18 @@ class MapIR:
             # print(self.data.dtype)
             # print(np.max(self.data))
             # print(np.min(self.data))
-            rgb_stack = np.round((self.data + abs(np.min(self.data))) * 255).astype('uint8')
+            if np.min(self.data) < 0:
+                rgb_stack = np.round((self.data + abs(np.min(self.data))) * 255).astype('uint8')
+            else:
+                rgb_stack = np.round((self.data - np.min(self.data)) * 255).astype('uint8')
         elif self.stage == 'Radiance Calibration':
             # print(self.data.dtype)
             # print(np.max(self.data))
             # print(np.min(self.data))
-            rgb_stack = np.round(self.data * 255).astype('uint8')
+            if np.min(self.data) < 0:
+                rgb_stack = np.round((self.data + abs(np.min(self.data))) / (np.max(self.data) + abs(np.min(self.data))) * 255).astype('uint8')
+            else:
+                rgb_stack = np.round((self.data - np.min(self.data)) / np.max(self.data) * 255).astype('uint8')
         else:
             # print(self.data.dtype)
             # print(np.max(self.data))
