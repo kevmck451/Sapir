@@ -5,6 +5,9 @@ from pathlib import Path
 import numpy as np
 import cv2
 import imageio
+import os
+import piexif
+from PIL import Image
 
 class MapIR:
     def __init__(self, raw_file_path):
@@ -162,7 +165,7 @@ class MapIR:
             if np.min(self.data) < 0:
                 rgb_stack = np.round((self.data + abs(np.min(self.data))) / (np.max(self.data) + abs(np.min(self.data))) * 255).astype('uint8')
             else:
-                rgb_stack = np.round((self.data - np.min(self.data)) / np.max(self.data) * 255).astype('uint8')
+                rgb_stack = np.round((self.data - np.min(self.data)) / (np.max(self.data - np.min(self.data))) * 255).astype('uint8')
         else:
             # print(self.data.dtype)
             # print(np.max(self.data))
@@ -182,13 +185,85 @@ class MapIR:
         plt.tight_layout(pad=1)
         plt.show()
 
+    # Function to extract GPS metadata from corresponding jpg image
+    def extract_GPS(self, file_type):
+
+        path = Path(self.path)
+        jpg_num = int(path.stem) + 1
+        if len(str(jpg_num)) < 3:
+            jpg_num = '0' + str(jpg_num)
+        jpg_filepath = f'{path.parent}/{jpg_num}.jpg'
+        image = Image.open(jpg_filepath)
+
+        exif_data = piexif.load(image.info["exif"])
+
+        # Extract the GPS data from the GPS portion of the metadata
+        geolocation = exif_data["GPS"]
+
+        # Create a new NumPy array with float32 data type and copy the geolocation data
+        geolocation_array = np.zeros((3,), dtype=np.float32)
+        if geolocation:
+            latitude = geolocation[piexif.GPSIFD.GPSLatitude]
+            longitude = geolocation[piexif.GPSIFD.GPSLongitude]
+            altitude = geolocation.get(piexif.GPSIFD.GPSAltitude, [0, 1])  # Add this line
+
+            if latitude and longitude and altitude:  # Add altitude check here
+                lat_degrees = latitude[0][0] / latitude[0][1]
+                lat_minutes = latitude[1][0] / latitude[1][1]
+                lat_seconds = latitude[2][0] / latitude[2][1]
+
+                lon_degrees = longitude[0][0] / longitude[0][1]
+                lon_minutes = longitude[1][0] / longitude[1][1]
+                lon_seconds = longitude[2][0] / longitude[2][1]
+
+                altitude_val = altitude[0] / altitude[1]  # altitude calculation
+
+                geolocation_array[0] = lat_degrees + (lat_minutes / 60) + (lat_seconds / 3600)
+                geolocation_array[1] = lon_degrees + (lon_minutes / 60) + (
+                        lon_seconds / 3600)  # updated with lon minutes and seconds
+                geolocation_array[2] = altitude_val  # assign altitude to array
+
+            # Append the image geolocation to the geo.txt file
+            file_path = os.path.join(path.parent.parent, '_processed', 'geo.txt')
+
+            # Check if the file exists
+            if not os.path.exists(file_path):
+                # If the file doesn't exist, it is the first time it is being opened
+                # Write the header "EPSG:4326"
+                with open(file_path, 'w') as f:
+                    f.write('EPSG:4326\n')
+
+            # Append the data to the file
+            with open(file_path, 'a') as f:
+                f.write(
+                    f'{path.stem}.{file_type}\t-{geolocation_array[1]}\t{geolocation_array[0]}\t{geolocation_array[2]}\n')
+
     # Function to export image as 16-bit tiff
     def export_tiff(self, filepath):
+        path = Path(filepath)
+        save_as = f'{path}/{self.path.stem}.tiff'
+
+        Absolute_Min_Value = -1.234929393
+        Absolute_Max_Value = 2.768087011
+        Absolute_Range = 4.003016404
+
+        # Normalize to 16 bit
+        # data = self.data
+        # data = (data - Absolute_Min_Value) / Absolute_Range
+        # data = np.round(data * 65535).astype(int)
+        # data = data.astype(np.uint16)
+
+        # Normalize to 16 bit
+        # data = self.data
+        # data = (data + abs(np.min(data))) / (np.max(data) + abs(np.min(data)))
+        # data = np.round(data * 65535).astype(int)
+        # data = data.astype(np.uint16)
+
         # Normalize to 16 bit
         data = self.data
-        data_norm = (data - np.min(data)) / (np.max(data) - np.min(data))
-        data_scaled = data_norm * 65535
-        self.data = data_scaled.astype(np.uint16)
+        data[data < 0] = 0
+        data = data / Absolute_Max_Value
+        data = np.round(data * 65535).astype(int)
+        data = data.astype(np.uint16)
 
-        path = Path(filepath)
-        imageio.imsave(path, self.data, format='tiff')
+        imageio.imsave(save_as, data, format='tiff')

@@ -97,6 +97,8 @@ def generate_radiance_equation_values(directory):
     amp_values_exp2 = {0: 527.881, 1: 508.7342, 2: 479.506, 3: 445.5909, 4: 408.9898,
                        5: 371.2294, 6: 332.9773, 7: 293.6617, 8: 252.3409, 9: 209.6933}
 
+    percent_open = [100, 95, 90, 85, 80, 75, 70, 65, 60, 55]
+
     # From Lab Sphere calibration documents (actual number times 10^-6)
     labsphere_fully_open_amps = 525.517
 
@@ -109,12 +111,20 @@ def generate_radiance_equation_values(directory):
     else:
         amp_values = amp_values_exp2
 
-    # Create amp ratio offset based on labsphere's fully open amps value
-    amp_offset = (amp_values.get(0) * (10 ** -6) / labsphere_fully_open_amps * (10 ** -6))
-    # print(f'Offset Value: {amp_offset}')
+    # ------ Adjust for differences in recorded amp values and company's amp values -------------
+    # Create amp ratio based on labsphere's fully open amps value
+    values_offset = (amp_values.get(0) * (10 ** -6) / labsphere_fully_open_amps * (10 ** -6))
+    values_offset = [(value / labsphere_fully_open_amps) for _, value in amp_values.items()]
+    values_offset.sort()
+    print(f'Value Offset: {values_offset}')
 
-    offset_amp_values = [value * (10 ** -6) for _, value in amp_values.items()]
-    offset_amp_values.sort()
+    # Offset values
+    R_values = [(x * y) for x, y in zip(R_values, values_offset)]
+    G_values = [(x * y) for x, y in zip(G_values, values_offset)]
+    N_values = [(x * y) for x, y in zip(N_values, values_offset)]
+
+    amp_values_adjusted = [value * (10 ** -6) for _, value in amp_values.items()]
+    amp_values_adjusted.sort()
     # print(f'New Amp List: {offset_amp_values}')
 
     # Open corrected wavelength values
@@ -138,9 +148,9 @@ def generate_radiance_equation_values(directory):
     nir_rad = sum(nir_interp(band) * rad for band, rad in zip(lab_bands, lab_rad_values))
 
     # Multiply the those values with the offsetted amp values from experiment
-    r_rad_vals = [red_rad * amp_val for amp_val in offset_amp_values]
-    g_rad_vals = [green_rad * amp_val for amp_val in offset_amp_values]
-    n_rad_vals = [nir_rad * amp_val for amp_val in offset_amp_values]
+    r_rad_vals = [red_rad * amp_val for amp_val in amp_values_adjusted]
+    g_rad_vals = [green_rad * amp_val for amp_val in amp_values_adjusted]
+    n_rad_vals = [nir_rad * amp_val for amp_val in amp_values_adjusted]
 
     # Linear regression to find the best fit lines
     r_slope, r_intercept, _, _, _ = stats.linregress(R_values, r_rad_vals)

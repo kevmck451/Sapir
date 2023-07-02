@@ -31,6 +31,8 @@ def NDVI(mapir_object, display=True, save=False):
     if display:
         plt.show()
 
+    return ndvi_array
+
 # Function to calculate and display the Green Normalized Difference Vegetation Index
 def GNDVI(mapir_object, display=True, save=False):
     NIR = mapir_object.data[:, :, mapir_object.NIR_index]

@@ -6,7 +6,7 @@
   - Drone Batteries
   - Drone
   - Controller
-  - Controller Phone with Litchi
+  - Controller Phone with Litchi Installed
   - Controller to Phone Cable
   - MapIR Camera in Mount with lense cover
   - Four M2 Mounting Screws
@@ -74,6 +74,7 @@
 - Wait until satelites are aquired and GPS is good (top of phone screen will be green)
 - Load flight plan from litchi (must be logged in)
 - When ready, start MapIR camera by pressing top button (it will start beeping) and start mission
+- Make sure the camera will see Reflectance Target on takeoff
 - If emergency arises, you can stop the flight on the phone in the Litchi App
 - If Mavic reaches low battery threshold, it will return to takeoff point
 

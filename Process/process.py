@@ -10,7 +10,7 @@ from data_filepaths import *
 from pathlib import Path
 
 
-def process_single(file):
+def process_single(file, save_directory=''):
     # Create MapIR Object
     image = MapIR(file)
     # image.dial_in()
@@ -38,8 +38,7 @@ def process_single(file):
 
     # Georectification
     # image.extract_GPS('tiff')
-    # filepath = ''
-    # image.export_tiff(filepath)
+    # image.export_tiff(save_directory)
     # image.display()
 
     # Analysis

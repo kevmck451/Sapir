@@ -46,17 +46,17 @@ def process_directory(base_directory):
     # rename_files(raw_directory)
 
     # Needed for Exporting Files
-    # make_directory(processed_directory)
+    make_directory(processed_directory)
 
     # Process Image
     for file in raw_directory.iterdir():
         if file.suffix == '.RAW':
-            process_single(file)
+            process_single(file, processed_directory)
 
 
 if __name__ == '__main__':
 
     process_directory(main_field_22)
-    process_directory(full_area_22)
-    process_directory(wheat_field_6_8)
-    process_directory(wheat_field_6_20)
+    # process_directory(full_area_22)
+    # process_directory(wheat_field_6_8)
+    # process_directory(wheat_field_6_20)

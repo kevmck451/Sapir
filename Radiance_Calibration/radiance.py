@@ -54,6 +54,7 @@ def radiance_calibration(mapir_object):
 
     Absolute_Min_Value = -1.234929393
     Absolute_Max_Value = 2.768087011
+    Absolute_Range = 4.003016404
 
     # Normalize
     # mapir_ob.data = np.round(mapir_ob.data * mapir_ob.max_raw_pixel_value).astype('int16')
