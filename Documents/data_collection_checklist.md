@@ -1,4 +1,4 @@
-# MapIR Data Collection Guide
+# MapIR Data Collection Checklist
 Please read the data collection guide to have a complete understanding of the operation of the MapIR with the Mavic Pro Drone. This intends to serve as an abbreviated checklist for once the process details are understood from the Collection Guide. 
 
 ## Equipment List
