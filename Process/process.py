@@ -30,15 +30,15 @@ def process_single(file, save_directory=''):
 
     # Radiance_Calibration
     image = radiance_calibration(image)
-    image.display()
+    # image.display()
 
     # Reflectance Calibration
     # image = reflectance_calibration(image)
     # image.display()
 
     # Georectification
-    # image.extract_GPS('tiff')
-    # image.export_tiff(save_directory)
+    image.extract_GPS('tiff')
+    image.export_tiff(save_directory)
     # image.display()
 
     # Analysis

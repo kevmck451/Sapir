@@ -262,7 +262,8 @@ class MapIR:
         # Normalize to 16 bit
         data = self.data
         data[data < 0] = 0
-        data = data / Absolute_Max_Value
+        # data = data / Absolute_Max_Value
+        data = data / np.max(data)
         data = np.round(data * 65535).astype(int)
         data = data.astype(np.uint16)
 

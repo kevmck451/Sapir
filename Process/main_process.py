@@ -3,7 +3,7 @@
 from MapIR.mapir import MapIR
 from pathlib import Path
 from Process.process import process_single
-from data_filepaths import *
+import data_filepaths
 
 # Rename image files to their last digits
 def rename_files(directory_arg):
@@ -43,7 +43,7 @@ def process_directory(base_directory):
     raw_directory = bd / 'raw'
 
     # Only first time dataset is processed
-    # rename_files(raw_directory)
+    rename_files(raw_directory)
 
     # Needed for Exporting Files
     make_directory(processed_directory)
@@ -56,7 +56,10 @@ def process_directory(base_directory):
 
 if __name__ == '__main__':
 
-    process_directory(main_field_22)
-    # process_directory(full_area_22)
-    # process_directory(wheat_field_6_8)
-    # process_directory(wheat_field_6_20)
+    # process_directory(data_filepaths.main_field_22)
+    # process_directory(data_filepaths.full_area_22)
+    # process_directory(data_filepaths.wheat_field_6_8)
+    # process_directory(data_filepaths.wheat_field_6_20)
+
+    process_directory(data_filepaths.wheat_field_7_27)
+

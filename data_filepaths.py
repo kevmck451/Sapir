@@ -10,6 +10,7 @@ full_area_22 = '../Data/MapIR/AC Summer 22/full area'
 
 wheat_field_6_8 = '../Data/MapIR/AC Summer 23/Wheat Field/6-20'
 wheat_field_6_20 = '../Data/MapIR/AC Summer 23/Wheat Field/6-20'
+wheat_field_7_27 = '../Data/MapIR/AC Summer 23/Wheat Field/7-27'
 main_sub_field_6_20 = '../Data/MapIR/AC Summer 23/Main Sub Field/6-20'
 
 # Wheat Field Test Files
