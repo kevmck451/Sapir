@@ -22,11 +22,11 @@ This guide outlines the process_single of preparing and processing data captured
 
 ## Data Processing
 
-To process_single your flight data, the directory must contain:
+To main_process your flight data, the directory must contain:
 - A 'raw' subfolder containing the RAW and JPG files
 - A RAW file of the reflectance target named 'ref_tar.RAW'
 
-Follow these steps to process_single your data:
+Follow these steps to main_process your data:
 
 1. **Run Processing Script**: From the MapIR package available at [https://github.com/JacobsSensorLab/mapir](https://github.com/JacobsSensorLab/mapir), run the "process_single.py" file with the filepath to the directory as an argument.
 
