@@ -8,7 +8,7 @@ from MapIR.mapir import MapIR
 from band_correction import Band_Correction
 from band_correction import generate_correction_matrix
 from band_correction import generate_wavelength_responses
-from data_filepaths import *
+from Data_Paths.data_filepaths import *
 
 
 # Display RAW graphs from Monochromator Experiment

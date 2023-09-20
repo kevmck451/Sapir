@@ -7,11 +7,10 @@ from Band_Correction.correction import band_correction
 from Radiance_Calibration.radiance import radiance_calibration
 from Radiance_Calibration.radiance import dark_current_subtraction
 from Radiance_Calibration.radiance import flat_field_correction
-from Reflectance_Calibration.reflectance_cal import reflectance_calibration
+from Reflectance_Calibration.reflectance_calibration import reflectance_calibration
 from Analysis.vegetation_index import NDVI
 from Data_Paths.data_filepaths import *
-from pathlib import Path
-import numpy as np
+
 
 
 def process_single(file, save_directory=''):
@@ -34,20 +33,11 @@ def process_single(file, save_directory=''):
 
     # Radiance_Calibration
     image = radiance_calibration(image)
-    image.display()
-    mapir_ob = image
-    print(np.max(mapir_ob.data[:,:,0]),np.min(mapir_ob.data[:,:,0]))
-    print(np.max(mapir_ob.data[:,:,1]),np.min(mapir_ob.data[:,:,1]))
-    print(np.max(mapir_ob.data[:,:,2]),np.min(mapir_ob.data[:,:,2]))
+    # image.display()
  
     # Reflectance Calibration
-    #image = reflectance_calibration(image)
-    #image.display()
-    #mapir_ob = image
-    #print(np.max(mapir_ob.data[:,:,0]),np.min(mapir_ob.data[:,:,0]))
-    #print(np.max(mapir_ob.data[:,:,1]),np.min(mapir_ob.data[:,:,1]))
-    #print(np.max(mapir_ob.data[:,:,2]),np.min(mapir_ob.data[:,:,2]))
-
+    image = reflectance_calibration(image)
+    # image.display()
 
     # Georectification
     image.extract_GPS('tiff')

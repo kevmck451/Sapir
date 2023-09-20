@@ -7,7 +7,6 @@ from MapIR.mapir import MapIR
 from pathlib import Path
 from process import process_single
 from Data_Paths.data_filepaths import *
-from Reflectance_Calibration.reflectance_cal import *
 
 # Rename image files to their last digits
 ## FIX ME: #9630 +?????
@@ -58,15 +57,6 @@ def process_directory(base_directory):
         if file.suffix == '.RAW':
             process_single(file, processed_directory)
 
-    reflectance_directory = bd / '_reflectance'
-
-    for file in processed_directory.iterdir():
-        if file.suffix == '.tiff':
-            reflectance_calibration(file,reflectance_directory)
-
-
-
 if __name__ == '__main__':
 
     process_directory(active_dataset)
-

@@ -1,13 +1,13 @@
 # MapIR RAW Base Class
 
 import matplotlib.pyplot as plt
-from pathlib import Path
 import numpy as np
 import cv2
 import imageio
 import os
 import piexif
 from PIL import Image
+from pathlib import Path
 
 class MapIR:
     def __init__(self, raw_file_path):

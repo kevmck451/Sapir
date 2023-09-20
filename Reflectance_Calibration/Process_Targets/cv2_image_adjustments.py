@@ -18,16 +18,16 @@ def rescale(image,scale):
     return cv2.resize(image,dimensions,interpolation=cv2.INTER_AREA)
 
 def norm16bit(image):
+    
     # Normalize to 16bit
     data = image.data
-    min = 0
-    max = 65535
-
-    scale = (max-min) / (np.max(data)-np.min(data))
-    offset = -np.min(data)
-
-    data16 = ((data+offset)*scale).astype(np.uint16)
-    return data16
+    data = np.array(data,dtype=np.uint16)
+    data[data < 0] = 0
+    # data = data / Absolute_Max_Value
+    data = data / np.max(data)
+    data = np.round(data * 65535).astype(int)
+    data = data.astype(np.uint16)
+    return data
 
 def export_tiff(self, filepath):
     path = filepath

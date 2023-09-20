@@ -77,4 +77,3 @@ class MapIR_png:
             plt.close()
         if display:
             plt.show()
-
