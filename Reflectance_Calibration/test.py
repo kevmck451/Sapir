@@ -6,7 +6,7 @@ from Band_Correction.correction import band_correction
 from Radiance_Calibration.radiance import radiance_calibration
 from Radiance_Calibration.radiance import dark_current_subtraction
 from Radiance_Calibration.radiance import flat_field_correction
-from Reflectance_Calibration.reflectance_cal import reflectance_calibration
+from Reflectance_Calibration.reflectance_calibration import reflectance_calibration
 from Analysis.vegetation_index import NDVI
 from Data_Paths.data_filepaths import *
 from pathlib import Path

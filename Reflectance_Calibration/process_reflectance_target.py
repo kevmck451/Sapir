@@ -45,6 +45,7 @@ def process_ref_target(mapir_object):
 
     return image
 
+
 def perspective_correction(mapir_object):
 
     image = mapir_object

@@ -5,7 +5,7 @@ main_path = 'C:/Users/Ainee/Desktop/Work/MapIR_Data'
 
 #-------------------------
 
-active_dataset = main_path+'/Data/Summer_023/AC Wheat Field 6-20'
+active_dataset = main_path + '/Trials & Experiments/Brightness Adjustment Tests 1 091823/shade'
 target_panel = active_dataset+'/ref_target.RAW'
 
 #------------------------
@@ -52,9 +52,9 @@ MC_Test_NIR = main_path+'/mapir-main/Process/Band_Correction/Wavelengths_RAW/Map
 # ----------------------
 
 Test_For_Aruco_Exp = main_path + '/Data/Summer 23/Test Files (Reflectance)/Trial 2/Sunny'
-Distorion_Cal_Experiment = main_path+'/Data/Distortion Calibration'
 Test_Reflectance_Set1 = main_path+'/Data/Summer 23/Test Files (Reflectance)/AC Wheatfield 7-27'
+brightness_test_sun = main_path+'/Trials & Experiments/Brightness Adjustment Tests 1 091823/sunny'
+brightness_test_shd = main_path+'/Trials & Experiments/Brightness Adjustment Tests 1 091823/shade'
 
-AC_WF_6_8 = main_path+'/Data/Summer 23/AC Wheat Field 6-8'
-AC_WF_6_20 = main_path+'/Data/Summer 23/AC Wheat Field 6-20'
-AC_WF_7_27 = main_path+'/Data/Summer 23/7-27-23 Agri Center'
+Distorion_Cal_Experiment = main_path+'/Data/Distortion Calibration'
+
