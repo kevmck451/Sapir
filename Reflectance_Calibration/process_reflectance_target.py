@@ -327,7 +327,7 @@ def ref_coefficients(mapir_object):
         plt.legend()
         plt.show()   
 
-show_img = "N"
+show_img = "Y"
 
 image = process_ref_target(target_panel)
 
