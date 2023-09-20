@@ -7,8 +7,8 @@ from Analysis.mapir_png import MapIR_png
 from Data_Paths.data_filepaths import *
 
 # Location of Georectified MapIR image
-image_filepath = active_dataset+'/_processed/999097.tiff'
-output_filepath =  active_dataset+'/tests'
+image_filepath = active_dataset+'/georect.png'
+output_filepath =  active_dataset
 
 image = MapIR_png(image_filepath)
 
