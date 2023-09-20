@@ -192,7 +192,7 @@ class MapIR:
         jpg_num = int(path.stem) + 1
         if len(str(jpg_num)) < 3:
             jpg_num = '0' + str(jpg_num)
-        jpg_filepath = f'{path.parent}/{jpg_num}.jpg'
+        jpg_filepath = f'{path.parent}\\{jpg_num}.jpg'
         image = Image.open(jpg_filepath)
 
         exif_data = piexif.load(image.info["exif"])

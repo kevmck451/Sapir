@@ -4,7 +4,7 @@ from MapIR.mapir import MapIR
 from Band_Correction.correction import band_correction
 from Radiance_Calibration.radiance import dark_current_subtraction
 from Radiance_Calibration.radiance import flat_field_correction
-from data_filepaths import *
+from Data_Paths.data_filepaths import *
 
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -162,7 +162,6 @@ def generate_radiance_equation_values(directory):
     print(f'N_Slope, N_Intercept = {n_slope}, {n_intercept}')
 
     return (r_slope, r_intercept), (g_slope, g_intercept), (n_slope, n_intercept)
-
 
 # MapIR class to process_single RAW images
 class MapIR_Radiance(MapIR):
