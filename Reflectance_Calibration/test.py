@@ -1,54 +1,63 @@
-import matplotlib.pyplot as plt
-import math as math
-import numpy as np
 import sys
 sys.path.append('C:/Users/Ainee/Desktop/Work/MapIR/mapir-main/Modules')
-import cv2
 
-from copy import deepcopy
-from MapIR.mapir import *
+from MapIR.mapir import MapIR
+from Band_Correction.correction import band_correction
+from Radiance_Calibration.radiance import radiance_calibration
+from Radiance_Calibration.radiance import dark_current_subtraction
+from Radiance_Calibration.radiance import flat_field_correction
+from Reflectance_Calibration.reflectance_cal import reflectance_calibration
+from Analysis.vegetation_index import NDVI
 from Data_Paths.data_filepaths import *
-from Process_Targets.cv2_image_adjustments import *
+from pathlib import Path
+import numpy as np
+from Reflectance_Calibration.Process_Targets.cv2_image_adjustments import *
 
-regression_coeff_r = np.load(active_dataset+'/coeffs/r_coeffs.npy')
-regression_coeff_g = np.load(active_dataset+'/coeffs/g_coeffs.npy')
-regression_coeff_n = np.load(active_dataset+'/coeffs/n_coeffs.npy')
+def process_single(file, save_directory=''):
+    # Create MapIR Object
+    image = MapIR(file)
+    # image.dial_in()
+    # image.display()
 
-print(regression_coeff_r,regression_coeff_g,regression_coeff_n)
+    # Dark Current Subtraction
+    image = dark_current_subtraction(image)
+    #image.display()
 
-file = active_dataset + '/_processed/99067.tiff'
+    # Band_Correction
+    image = band_correction(image)
+    #image.display()
 
-image = cv2.imread(file,cv2.IMREAD_UNCHANGED)
+    # Flat Field Correction
+    image = flat_field_correction(image)
+    #image.display()
 
-image_small = rescale(image,0.25)
-cv2.imshow("Image",image_small)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    # Radiance_Calibration
+    image = radiance_calibration(image)
+    #image.display()
+    # print(np.max(mapir_ob.data[:,:,0]),np.min(mapir_ob.data[:,:,0]))
+    # print(np.max(mapir_ob.data[:,:,1]),np.min(mapir_ob.data[:,:,1]))
+    # print(np.max(mapir_ob.data[:,:,2]),np.min(mapir_ob.data[:,:,2]))
+ 
+    # Reflectance Calibration
+    image = reflectance_calibration(image)
+    #image.display()
+    mapir_ob = image
 
-image = image.astype(np.float32)
-
-print(np.min(image[:,:,0]),np.max(image[:,:,0]))
-print(np.min(image[:,:,1]),np.max(image[:,:,1]))
-print(np.min(image[:,:,2]),np.max(image[:,:,2]))
-
-print(f'Image Data Type: {image.dtype}')
-
-image[:,:,0] = (image[:,:,0] * regression_coeff_r[0]) + regression_coeff_r[1]
-image[:,:,1] = (image[:,:,1] * regression_coeff_g[0]) + regression_coeff_g[1]
-image[:,:,2] = (image[:,:,2] * regression_coeff_n[0]) + regression_coeff_n[1]
-
-print(f'Image Data Type: {image.dtype}')
-image_small = rescale(image,0.25)
-
-min_max_r = f'{np.max(image[:,:,0]):.10f}'
-min_max_g = f'{np.max(image[:,:,1]):.10f}'
-
-print(min_max_r,min_max_g)
-print(np.min(image[:,:,0]),np.max(image[:,:,0]))
-print(np.min(image[:,:,1]),np.max(image[:,:,1]))
-print(np.min(image[:,:,2]),np.max(image[:,:,2]))
+    print("REVISED OBJECT VALUES:")
+    print(np.max(mapir_ob.data[:,:,0]),np.min(mapir_ob.data[:,:,0]))
+    print(np.max(mapir_ob.data[:,:,1]),np.min(mapir_ob.data[:,:,1]))
+    print(np.max(mapir_ob.data[:,:,2]),np.min(mapir_ob.data[:,:,2]))
 
 
-cv2.imshow("Image",image_small)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    # # Georectification
+    # image.extract_GPS('tiff')
+    # image.export_tiff(save_directory)
+    # # image.display()
+
+    # # Analysis
+    # # NDVI(image)
+
+    return image
+
+image = process_single(active_dataset+'/raw/9967.RAW')
+export_tiff(image,active_dataset+'/tests')

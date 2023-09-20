@@ -41,6 +41,7 @@ def process_ref_target(mapir_object):
     image = radiance_calibration(image)
     #image.display()
 
+    image.display()
     export_tiff(image,active_dataset)
 
     return image
@@ -51,10 +52,15 @@ def perspective_correction(mapir_object):
 
     tiff_img = active_dataset+'/ref_target.tiff'
     img = cv2.imread(tiff_img,cv2.IMREAD_UNCHANGED)
+
     img_smal = rescale(img,.25)
+    cv2.imshow("Image",img_smal)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
     # Make the 8-bit duplicate
     img8 = (img/256).astype('uint8')
-    img8_small = rescale(img8,0.25)
+    #img8_small = rescale(img8,0.25)
     # Setup aruco parameter things
     aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
     marker_params = cv2.aruco.DetectorParameters()
@@ -117,10 +123,10 @@ def crop_target(mapir_object):
     cv2.aruco.detectMarkers(tr_img8,aruco_dict)
     #print(marker_IDs)
     cv2.aruco.drawDetectedMarkers(tr_img8,marker_corners,marker_IDs,borderColor=(0,255,0))
-    print(marker_corners[0][0][0])
+    #print(marker_corners[0][0][0])
 
     distance_unit = marker_corners[0][0][1][0]-marker_corners[0][0][0][0]
-    print(distance_unit)
+    #print(distance_unit)
     corner_x = marker_corners[0][0][0][0]
     corner_y = marker_corners[0][0][0][1]
 
@@ -132,15 +138,22 @@ def crop_target(mapir_object):
     # Calculate distance relative to aruco marker
     target_area = tr_img[y1:y2,x1:x2]
 
+    cv2.imwrite(active_dataset+'/cropped_img.tiff',target_area)
+
     # display image 
     cv2.imshow("target",target_area)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+    print(np.min(target_area[:,:,1]))
+    print(np.max(target_area[:,:,2]))
+
     return target_area
 
 def isolate_panels(mapir_object):
     image = crop_target(mapir_object)
+    image = image.astype(np.float32)
+    
     x = image.shape[1]
     y = image.shape[0]
 
@@ -182,19 +195,19 @@ def isolate_panels(mapir_object):
             cv2.waitKey(0)
             cv2.destroyAllWindows()
 
-        if i == 3:
-            x1 = int(0+padding)
-            x2 = int((x/2)-padding)
-            y1 = int(0+padding)
-            y2 = int((y/2)-padding)
+        # if i == 3:
+        #     x1 = int(0+padding)
+        #     x2 = int((x/2)-padding)
+        #     y1 = int(0+padding)
+        #     y2 = int((y/2)-padding)
 
-            white_panel = image[y1:y2,x1:x2]
+        #     white_panel = image[y1:y2,x1:x2]
 
-            cv2.imshow("panel",white_panel)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+        #     cv2.imshow("panel",white_panel)
+        #     cv2.waitKey(0)
+        #     cv2.destroyAllWindows()
             
-    return black_panel,dgray_panel,lgray_panel #, white_panel
+    return black_panel,dgray_panel,lgray_panel
 
 def extract_dn_mean(image):
     black,dgray,lgray = isolate_panels(image)
@@ -203,7 +216,7 @@ def extract_dn_mean(image):
     target_rad_g = []
     target_rad_n = []
 
-    for i in range(0,3):
+    for i in range(0,4):
         if i == 0:
             target_rad_r.append(np.mean(black[:,:,0]))
             target_rad_g.append(np.mean(black[:,:,1]))
@@ -220,10 +233,13 @@ def extract_dn_mean(image):
             target_rad_n.append(np.mean(lgray[:,:,2])) 
 
         # if i == 3:
-        #     target_rad_r.append(np.mean(white[:,:,0]))
-        #     target_rad_g.append(np.mean(white[:,:,1]))
-        #     target_rad_n.append(np.mean(white[:,:,2])) 
+        #      target_rad_r.append(np.mean(white[:,:,0]))
+        #      target_rad_g.append(np.mean(white[:,:,1]))
+        #      target_rad_n.append(np.mean(white[:,:,2])) 
 
+    # print(target_rad_r)
+    # print(target_rad_g)
+    # print(target_rad_n)
     return target_rad_r, target_rad_g, target_rad_n
 
 def ref_coefficients(mapir_object):
@@ -236,7 +252,7 @@ def ref_coefficients(mapir_object):
     target_refl_g = [.01953,.19648,.26582]
     target_refl_n = [.01890,.23549,.27964]
     
-    # Fitting linear regression line
+    # Fitting to a line
     regression_coeff_r = np.polyfit(target_rad_r,target_refl_r,1)
     regression_coeff_g = np.polyfit(target_rad_g,target_refl_g,1)
     regression_coeff_n = np.polyfit(target_rad_n,target_refl_n,1)
@@ -280,6 +296,6 @@ def ref_coefficients(mapir_object):
         plt.legend()
         plt.show()   
 
-target_panel = active_dataset+'/ref_target.RAW'
 ref_coefficients(target_panel)
+
 

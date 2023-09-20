@@ -34,7 +34,7 @@ def process_single(file, save_directory=''):
 
     # Radiance_Calibration
     image = radiance_calibration(image)
-    #image.display()
+    image.display()
     mapir_ob = image
     print(np.max(mapir_ob.data[:,:,0]),np.min(mapir_ob.data[:,:,0]))
     print(np.max(mapir_ob.data[:,:,1]),np.min(mapir_ob.data[:,:,1]))

@@ -1,13 +1,11 @@
 # File to house all the data directories for iteration
 
 # SOURCE PATH:
-main_path = 'C:/Users/Ainee/Desktop/Work/MapIR'
-
-
+main_path = 'C:/Users/Ainee/Desktop/Work/MapIR_Data'
 
 #-------------------------
 
-active_dataset = main_path+'/Data/Summer 23/AC Wheat Field 6-20 - Copy'
+active_dataset = main_path+'/Data/Summer_23/AC_Wheat_Field_6-20_Copy'
 target_panel = active_dataset+'/ref_target.RAW'
 
 #------------------------
