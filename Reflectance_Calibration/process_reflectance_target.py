@@ -21,39 +21,39 @@ from Reflectance_Calibration.Process_Targets.cv2_image_adjustments import *
 def process_ref_target(mapir_object):
 
     image = MapIR(mapir_object)
-    #image.display()
+    # image.display()
 
     # Dark Current Subtraction
     image = dark_current_subtraction(image)
-    #image.display()
+    # image.display()
 
     # Band_Correction
     image = band_correction(image)
-    #image.display()
+    # image.display()
 
     # Flat Field Correction
     image = flat_field_correction(image)
-    #image.display()
+    # image.display()
 
     # Radiance_Calibration
     image = radiance_calibration(image)
-    #image.display()
+    # image.display()
 
     if show_img == "Y":
         image.display()
     export_tiff(image,active_dataset)
-
+    # image.display()
     return image
 
 
 def perspective_correction(mapir_object):
 
     image = mapir_object
-
+    
     # SECTION FOR TIFF USED IN ARUCO DETECTION
     tiff_img = active_dataset+'/ref_target.tiff'
     img = cv2.imread(tiff_img,cv2.IMREAD_UNCHANGED)
-
+ 
     if show_img == "Y":
         img_smal = rescale(img,.25)
         cv2.imshow("Before Perspective Correction TIFF",img_smal)
@@ -106,7 +106,7 @@ def perspective_correction(mapir_object):
         if show_img == "Y":
             cv2.imshow('Pre-Correction cv2 16bit', og_img)
             cv2.imshow('Transformed Image 8bit', tr_img8)
-            cv2.imshow('Post-Correction cv2 16bit', tr_img)
+            # cv2.imshow('Post-Correction cv2 16bit', tr_img)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
 
@@ -119,14 +119,14 @@ def perspective_correction(mapir_object):
         return None
    
 def crop_target(mapir_object,show_img):
-
     main_image = mapir_object
     mapir_object.stage = "Pre-Cropping MapIR Data"
-    image.display()
+
 
     # SECTION FOR TIFF USED IN ARUCO DETECTION
     tiff_img = active_dataset+'/process_files/ref_target.tiff'
     img = cv2.imread(tiff_img,cv2.IMREAD_UNCHANGED)
+    
     image_8bit = (img/256).astype('uint8')
 
     if show_img =="Y":
@@ -167,7 +167,7 @@ def crop_target(mapir_object,show_img):
     # Declare stage & name
     main_image.data = target_area
     main_image.stage = "Post-Cropping MapIR Data"
-    main_image.display()
+    # main_image.display()
     export_tiff(main_image,active_dataset+"/process_files")
 
     print(np.min(target_area[:,:,1]))

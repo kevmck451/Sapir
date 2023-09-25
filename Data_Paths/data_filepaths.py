@@ -5,7 +5,7 @@ main_path = 'C:/Users/Ainee/Desktop/Work/MapIR_Data'
 
 #-------------------------
 
-active_dataset = main_path + '/Trials & Experiments/Brightness Adjustment Tests 1 091823/shade'
+active_dataset = main_path + '/Trials & Experiments/Without Band Correction 092223/Sunny'
 target_panel = active_dataset+'/ref_target.RAW'
 
 #------------------------
@@ -51,7 +51,7 @@ MC_Test_NIR = main_path+'/mapir-main/Process/Band_Correction/Wavelengths_RAW/Map
 # ---- AINEE PATHS -----
 # ----------------------
 
-Test_For_Aruco_Exp = main_path + '/Data/Summer 23/Test Files (Reflectance)/Trial 2/Sunny'
+Test_For_Aruco_Exp = main_path + '/Data/Summer 23/Test Files (Reflectance)/Trial 3/Sunny-Copy'
 Test_Reflectance_Set1 = main_path+'/Data/Summer 23/Test Files (Reflectance)/AC Wheatfield 7-27'
 brightness_test_sun = main_path+'/Trials & Experiments/Brightness Adjustment Tests 1 091823/sunny'
 brightness_test_shd = main_path+'/Trials & Experiments/Brightness Adjustment Tests 1 091823/shade'

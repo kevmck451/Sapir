@@ -9,7 +9,7 @@ from Band_Correction import hyperspectral as hype
 
 
 import matplotlib.pyplot as plt
-import numpy as np
+import numpy as np 
 from pathlib import Path
 
 # Function to generate correction matrix from monochromator experiment
