@@ -24,34 +24,33 @@ def process_ref_target(mapir_object):
     # image.display()
 
     # Dark Current Subtraction
-    image = dark_current_subtraction(image)
+    # image = dark_current_subtraction(image)
     # image.display()
 
     # Band_Correction
-    image = band_correction(image)
+    # image = band_correction(image)
     # image.display()
 
     # Flat Field Correction
-    image = flat_field_correction(image)
+    # image = flat_field_correction(image)
     # image.display()
 
     # Radiance_Calibration
-    image = radiance_calibration(image)
-    # image.display()
+    # image = radiance_calibration(image)
+    image.display()
 
     if show_img == "Y":
         image.display()
-    export_tiff(image,active_dataset)
+    export_tiff_ref(image,active_dataset+'/process_files')
     # image.display()
     return image
-
 
 def perspective_correction(mapir_object):
 
     image = mapir_object
     
     # SECTION FOR TIFF USED IN ARUCO DETECTION
-    tiff_img = active_dataset+'/ref_target.tiff'
+    tiff_img = active_dataset+'/process_files/target.tiff'
     img = cv2.imread(tiff_img,cv2.IMREAD_UNCHANGED)
  
     if show_img == "Y":
@@ -112,7 +111,7 @@ def perspective_correction(mapir_object):
 
         image.stage = "Post-Perspective Transformation MapIR Object"
         image.display()
-        export_tiff(image,active_dataset+'/process_files')
+        export_tiff_ref(image,active_dataset+'/process_files')
         return image
     else:
         print("No ArUco marker detected.")
@@ -124,7 +123,7 @@ def crop_target(mapir_object,show_img):
 
 
     # SECTION FOR TIFF USED IN ARUCO DETECTION
-    tiff_img = active_dataset+'/process_files/ref_target.tiff'
+    tiff_img = active_dataset+'/process_files/target.tiff'
     img = cv2.imread(tiff_img,cv2.IMREAD_UNCHANGED)
     
     image_8bit = (img/256).astype('uint8')
@@ -168,7 +167,7 @@ def crop_target(mapir_object,show_img):
     main_image.data = target_area
     main_image.stage = "Post-Cropping MapIR Data"
     # main_image.display()
-    export_tiff(main_image,active_dataset+"/process_files")
+    export_tiff_ref(main_image,active_dataset+"/process_files")
 
     print(np.min(target_area[:,:,1]))
     print(np.max(target_area[:,:,2]))
@@ -182,7 +181,7 @@ def isolate_panels(mapir_object):
     x = image.data.shape[1]
     y = image.data.shape[0]
 
-    padding = x*0.02
+    padding = x*0.10
     for i in range(0,4):
         if i == 0:
             x1 = int((x/2)+padding)
@@ -227,22 +226,22 @@ def isolate_panels(mapir_object):
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
 
-        # if i == 3:
-        #     x1 = int(0+padding)
-        #     x2 = int((x/2)-padding)
-        #     y1 = int(0+padding)
-        #     y2 = int((y/2)-padding)
+        if i == 3:
+            x1 = int(0+padding)
+            x2 = int((x/2)-padding)
+            y1 = int(0+padding)
+            y2 = int((y/2)-padding)
 
-        #     white_panel = image[y1:y2,x1:x2]
+            white_panel = image[y1:y2,x1:x2]
 
-        #     cv2.imshow("panel",white_panel)
-        #     cv2.waitKey(0)
-        #     cv2.destroyAllWindows()
+            cv2.imshow("panel",white_panel)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
             
-    return black_panel,dgray_panel,lgray_panel
+    return black_panel,dgray_panel,lgray_panel,white_panel
 
 def extract_dn_mean(image):
-    black,dgray,lgray = isolate_panels(image)
+    black,dgray,lgray,white = isolate_panels(image)
 
     target_rad_r = []
     target_rad_g = []
@@ -264,10 +263,10 @@ def extract_dn_mean(image):
             target_rad_g.append(np.mean(lgray[:,:,1]))
             target_rad_n.append(np.mean(lgray[:,:,2])) 
 
-        # if i == 3:
-        #      target_rad_r.append(np.mean(white[:,:,0]))
-        #      target_rad_g.append(np.mean(white[:,:,1]))
-        #      target_rad_n.append(np.mean(white[:,:,2])) 
+        if i == 3:
+             target_rad_r.append(np.mean(white[:,:,0]))
+             target_rad_g.append(np.mean(white[:,:,1]))
+             target_rad_n.append(np.mean(white[:,:,2])) 
 
     # print(target_rad_r)
     # print(target_rad_g)
@@ -279,10 +278,10 @@ def ref_coefficients(mapir_object):
     target_rad_r,target_rad_g,target_rad_n = extract_dn_mean(mapir_object)
 
     # Calibration target values provided by MapIR
-                        #B     DG     LG 
-    target_refl_r = [.01919,.20255,.26632]
-    target_refl_g = [.01953,.19648,.26582]
-    target_refl_n = [.01890,.23549,.27964]
+                        #B         DG       LG       W        
+    target_refl_r = [.01944618,.2011673,.2621846,.8710764]
+    target_refl_g = [.01969747,.1919700,.2616519,.8605841]
+    target_refl_n = [.02034653,.2370930,.2817854,.8505058]
     
     # Fitting to a line
     regression_coeff_r = np.polyfit(target_rad_r,target_refl_r,1)
@@ -329,6 +328,8 @@ def ref_coefficients(mapir_object):
         plt.show()   
 
 show_img = "Y"
+active_dataset = active_dataset+'/shade'
+target_panel = active_dataset+'/raw/1.RAW'
 
 image = process_ref_target(target_panel)
 

@@ -29,9 +29,9 @@ def norm16bit(image):
     data = data.astype(np.uint16)
     return data
 
-def export_tiff(self, filepath):
+def export_tiff_ref(self, filepath):
     path = filepath
-    save_as = f'{filepath}/{self.path.stem}.tiff'
+    save_as = f'{filepath}/target.tiff'
 
     # Normalize to 16bit
     data = self.data
