@@ -16,14 +16,14 @@ def band_correction(mapir_object, corr_values=None):
         # Monochromator Exp 4 Values after data (changed data type / ratios same)
         # image_matrix = [[5481.53, 664.44, 4510.03], [1309.98, 5660.94, 4294.08], [740.54, 796.69, 4686.63]]
         # after dark current subtraction
-        image_matrix = [[5365.73, 540.92, 4394.23], [1196.12, 5539.49, 4180.21], [625.38, 689.21, 4571.48]]
+        image_matrix = [[336, 33, 275], [74, 347, 261], [37, 41, 286]]#[[5365.73, 540.92, 4394.23], [1196.12, 5539.49, 4180.21], [625.38, 689.21, 4571.48]]
 
     else:
         # Values injected from Experiment
         image_matrix = corr_values
 
     # Calculate the inverse of the image matrix
-    image_matrix = np.asarray(image_matrix)
+    image_matrix = np.asarray(image_matrix, dtype=np.float64)
     inverse_matrix = np.linalg.inv(image_matrix)
     # print(inverse_matrix)
 

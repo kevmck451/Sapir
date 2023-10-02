@@ -25,19 +25,19 @@ def process_ref_target(mapir_object):
 
     # Dark Current Subtraction
     # image = dark_current_subtraction(image)
-    # image.display()
+    # # image.display()
 
-    # Band_Correction
-    # image = band_correction(image)
-    # image.display()
+    # # Band_Correction
+    image = band_correction(image)
+    # # image.display()
 
-    # Flat Field Correction
+    # # Flat Field Correction
     # image = flat_field_correction(image)
-    # image.display()
+    # # image.display()
 
-    # Radiance_Calibration
+    # # Radiance_Calibration
     # image = radiance_calibration(image)
-    image.display()
+    # image.display()
 
     if show_img == "Y":
         image.display()
@@ -128,11 +128,11 @@ def crop_target(mapir_object,show_img):
     
     image_8bit = (img/256).astype('uint8')
 
-    if show_img =="Y":
-        img_smal = rescale(image_8bit,.25)
-        cv2.imshow("Pre-Cropping 8-bit TIFF",img_smal)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+    # if show_img =="Y":
+    #     img_smal = rescale(image_8bit,.25)
+    #     cv2.imshow("Pre-Cropping 8-bit TIFF",img_smal)
+    #     cv2.waitKey(0)
+    #     cv2.destroyAllWindows()
 
     # Detect marker on transformed image
     aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)
@@ -159,7 +159,8 @@ def crop_target(mapir_object,show_img):
     # display image 
 
     if show_img == "Y":
-        cv2.imshow("Cropped Target Area via openCV 8-bit",target_area)
+        panel_disp = norm16bit(target_area)
+        cv2.imshow("Cropped Target Area via openCV 8-bit",panel_disp)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -181,20 +182,21 @@ def isolate_panels(mapir_object):
     x = image.data.shape[1]
     y = image.data.shape[0]
 
-    padding = x*0.10
+    padding = x*0.05
     for i in range(0,4):
         if i == 0:
             x1 = int((x/2)+padding)
             x2 = int(x-padding)
             y1 = int((y/2)+padding)
-            y2 = int(y-padding)
+            y2 = int(y-(padding))
 
             black_panel = np.copy(image.data)
             black_panel = black_panel[y1:y2,x1:x2]
 
             if show_img == "Y":
 
-                cv2.imshow("panel",black_panel)
+                panel_disp = norm16bit(black_panel)
+                cv2.imshow("black",panel_disp)
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
         
@@ -202,13 +204,14 @@ def isolate_panels(mapir_object):
             x1 = int(0+padding)
             x2 = int((x/2)-padding)
             y1 = int((y/2)+padding)
-            y2 = int(y-padding)
+            y2 = int(y-(padding))
 
             dgray_panel = np.copy(image.data)
             dgray_panel = dgray_panel[y1:y2,x1:x2]
 
             if show_img == "Y":
-                cv2.imshow("panel",dgray_panel)
+                panel_disp = norm16bit(dgray_panel)
+                cv2.imshow("dgray",dgray_panel)
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
 
@@ -216,13 +219,14 @@ def isolate_panels(mapir_object):
             x1 = int((x/2)+padding)
             x2 = int(x-padding)
             y1 = int(0+padding)
-            y2 = int((y/2)-padding)
+            y2 = int((y/2)-(padding))
 
             lgray_panel = np.copy(image.data)
             lgray_panel = lgray_panel[y1:y2,x1:x2]
 
             if show_img == "Y":
-                cv2.imshow("panel",lgray_panel)
+                panel_disp = norm16bit(lgray_panel)
+                cv2.imshow("lgray",lgray_panel)
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
 
@@ -232,16 +236,19 @@ def isolate_panels(mapir_object):
             y1 = int(0+padding)
             y2 = int((y/2)-padding)
 
+            white_panel = np.copy(image.data)
             white_panel = image[y1:y2,x1:x2]
 
-            cv2.imshow("panel",white_panel)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-            
-    return black_panel,dgray_panel,lgray_panel,white_panel
+            # if show_img == "Y":
+            #     panel_disp = norm16bit(white_panel)
+            #     cv2.imshow("white",white_panel)
+            #     cv2.waitKey(0)
+            #     cv2.destroyAllWindows()
+                
+    return black_panel,dgray_panel,lgray_panel
 
 def extract_dn_mean(image):
-    black,dgray,lgray,white = isolate_panels(image)
+    black,dgray,lgray = isolate_panels(image)
 
     target_rad_r = []
     target_rad_g = []
@@ -263,10 +270,10 @@ def extract_dn_mean(image):
             target_rad_g.append(np.mean(lgray[:,:,1]))
             target_rad_n.append(np.mean(lgray[:,:,2])) 
 
-        if i == 3:
-             target_rad_r.append(np.mean(white[:,:,0]))
-             target_rad_g.append(np.mean(white[:,:,1]))
-             target_rad_n.append(np.mean(white[:,:,2])) 
+        # if i == 3:
+        #      target_rad_r.append(np.mean(white[:,:,0]))
+        #      target_rad_g.append(np.mean(white[:,:,1]))
+        #      target_rad_n.append(np.mean(white[:,:,2])) 
 
     # print(target_rad_r)
     # print(target_rad_g)
@@ -278,10 +285,14 @@ def ref_coefficients(mapir_object):
     target_rad_r,target_rad_g,target_rad_n = extract_dn_mean(mapir_object)
 
     # Calibration target values provided by MapIR
-                        #B         DG       LG       W        
-    target_refl_r = [.01944618,.2011673,.2621846,.8710764]
-    target_refl_g = [.01969747,.1919700,.2616519,.8605841]
-    target_refl_n = [.02034653,.2370930,.2817854,.8505058]
+    #                     #B         DG       LG       W        
+    # target_refl_r = [.01944618,.2011673,.2621846,.8710764]
+    # target_refl_g = [.01969747,.1919700,.2616519,.8605841]
+    # target_refl_n = [.02034653,.2370930,.2817854,.8505058]
+                        #B         DG       LG    
+    target_refl_r = [.01944618,.2011673,.2621846]
+    target_refl_g = [.01969747,.1919700,.2616519]
+    target_refl_n = [.02034653,.2370930,.2817854]
     
     # Fitting to a line
     regression_coeff_r = np.polyfit(target_rad_r,target_refl_r,1)
@@ -304,23 +315,30 @@ def ref_coefficients(mapir_object):
     # Option to view graphs 
     show_plots = 'y'
     if show_plots == 'y':
+
+        slope, intercept = regression_coeff_r
         print(target_rad_r)
         print(target_refl_r)
-        plt.plot(target_rad_r,target_refl_r,label = 'Reflectance')
+        plt.scatter(target_rad_r,target_refl_r,label = 'Reflectance')
+        plt.plot(target_rad_r, slope * np.array(target_rad_r) + intercept, label=f'Fit Line: y = {slope:.2f}x + {intercept:.2f}', color='red')
         plt.ylabel('Target Reflectance Level')
         plt.xlabel('Radiance at Sensor (L)')
         plt.title('Red')
         plt.legend()
         plt.show()   
 
-        plt.plot(target_rad_g,target_refl_g,label = 'Reflectance')
+        slope, intercept = regression_coeff_g
+        plt.scatter(target_rad_g,target_refl_g,label = 'Reflectance')
+        plt.plot(target_rad_g, slope * np.array(target_rad_g) + intercept, label=f'Fit Line: y = {slope:.2f}x + {intercept:.2f}', color='red')
         plt.ylabel('Target Reflectance Level')
         plt.xlabel('Radiance at Sensor (L)')
         plt.title('Green')
         plt.legend()
         plt.show()   
 
-        plt.plot(target_rad_n,target_refl_n,label = 'Reflectance')
+        slope, intercept = regression_coeff_n
+        plt.scatter(target_rad_n,target_refl_n,label = 'Reflectance')
+        plt.plot(target_rad_n, slope * np.array(target_rad_n) + intercept, label=f'Fit Line: y = {slope:.2f}x + {intercept:.2f}', color='red')
         plt.ylabel('Target Reflectance Level')
         plt.xlabel('Radiance at Sensor (L)')
         plt.title('NIR')

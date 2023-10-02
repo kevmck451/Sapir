@@ -5,7 +5,7 @@ main_path = 'C:/Users/Ainee/Desktop/Work/MapIR_Data'
 
 #-------------------------
 
-active_dataset = main_path + '/Trials & Experiments/MapIR Tests 092523/trial 1'
+active_dataset = main_path + '/Trials & Experiments/Labsphere Tests 092823/Set 1'
 # target_panel = active_dataset+'/ref_target.RAW'
 
 #------------------------

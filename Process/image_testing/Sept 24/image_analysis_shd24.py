@@ -21,19 +21,19 @@ def process_single_test(file, save_directory):
 
     # # # Dark Current Subtraction
     # image = dark_current_subtraction(image)
-    # # # # image.display()
+    # # # # # image.display()
 
-    # # # Band_Correction
-    # # image = band_correction(image)
-    # # # # image.display()
+    # # # # Band_Correction
+    image = band_correction(image)
+    # # # # # image.display()
 
-    # # # Flat Field Correction
+    # # # # Flat Field Correction
     # image = flat_field_correction(image)
-    # # # image.display()
+    # # # # image.display()
 
-    # # # Radiance_Calibration
+    # # # # Radiance_Calibration
     # image = radiance_calibration(image)
-    # image.display()
+    # # image.display()
  
     # # Reflectance Calibration
     image = reflectance_calibration2(image)
@@ -64,7 +64,7 @@ def reflectance_calibration2(mapir_object):
 
     return mapir_ob
 
-active_dataset = active_dataset+'/sunny'
+active_dataset = active_dataset+'/shade'
 save_directory = active_dataset+'/outputs'
 
 test_image = process_single_test(active_dataset+'/raw/1.RAW',save_directory)
@@ -72,13 +72,13 @@ test_image = process_single_test(active_dataset+'/raw/1.RAW',save_directory)
 # Coordinates
 
 # Paper
-x1 = 1596; y1 = 1717; x2 = 1774; y2 = 2006
+x1 = 1793; y1 = 1656; x2 = 1977; y2 = 1948
 
 # Board
-x3 = 2028; y3 = 1594; x4 = 2526; y4 = 2103
+x3 = 2239; y3 = 1511; x4 = 2755; y4 = 2027
 
 # Foam
-x5 = 1110; y5 = 1709; x6 = 1328; y6 = 1973
+x5 = 994; y5 = 1629; x6 = 1234; y6 = 1955
 
 # Check squares
 
@@ -96,9 +96,9 @@ foam_square.display()
 
 # Check stuff
 
-print("Paper Square Slice Shape:", paper_square.data[y1:y2, x1:x2].shape)
-print("Board Square Slice Shape:", board_square.data[y3:y4, x3:x4].shape)
-print("Foam Square Slice Shape:", foam_square.data[y5:y6, x5:x6].shape)
+# print("Paper Square Slice Shape:", paper_square.data[y1:y2, x1:x2].shape)
+# print("Board Square Slice Shape:", board_square.data[y3:y4, x3:x4].shape)
+# print("Foam Square Slice Shape:", foam_square.data[y5:y6, x5:x6].shape)
 
 
 #  Calculate values of squares
@@ -126,5 +126,5 @@ table_data = [
 table = tabulate(table_data,headers="firstrow",tablefmt="grid")
 
 print()
-print("Data from a sample in the image:")
+print("Shaded image:")
 print(table)
