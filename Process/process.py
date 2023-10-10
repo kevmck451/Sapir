@@ -36,13 +36,13 @@ def process_single(file, save_directory=''):
     # image.display()
  
     # Reflectance Calibration
-    image = reflectance_calibration(image)
+    # image = reflectance_calibration(image)
     # image.display()
 
     # Georectification
     image.extract_GPS('tiff')
     image.export_tiff(save_directory)
-    image.display()
+    # image.display()
 
     # Analysis
     # NDVI(image)
