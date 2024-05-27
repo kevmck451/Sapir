@@ -4,7 +4,7 @@ Authors:
 Kevin McKenzie (2023)
 Ainee Favorito (2023-2024)
 
-[Poster Image](media/mapir_poster.jpeg)
+![Poster Image](media/mapir_poster.jpeg)
 
 The MapIR Survey3 is a multispectral camera which captures images in the red, green and near-infrared
 bands for the purpose of argicultural assessment. This program is meant to unpack and post-process RAW files from the Survey3. 
