@@ -2,7 +2,6 @@
 
 Authors:
 Kevin McKenzie (2023)
-Ainee Favorito (2023-2024)
 
 ![Poster Image](media/mapir_poster.jpeg)
 
