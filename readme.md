@@ -1,8 +1,5 @@
 ## MapIR Post-Processing Code v4
 
-Authors:
-Kevin McKenzie (2023)
-
 ![Poster Image](media/mapir_poster.jpeg)
 
 The MapIR Survey3 is a multispectral camera which captures images in the red, green and near-infrared
